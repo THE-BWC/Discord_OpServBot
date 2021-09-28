@@ -1,0 +1,100 @@
+[28.9.2021 10.48.06] - [ERROR] - TypeError [ERR_INVALID_CALLBACK]: Callback must be a function. Received undefined
+    at makeCallback (node:fs:186:3)
+    at Object.readdir (node:fs:1354:14)
+    at registerEvents (C:\Programming\MooseBot_V13\bot.js:43:26)
+    at Object.<anonymous> (C:\Programming\MooseBot_V13\bot.js:78:1)
+    at Module._compile (node:internal/modules/cjs/loader:1101:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:79:12)
+    at node:internal/main/run_main_module:17:47
+[28.9.2021 12.20.05] - [ERROR] - TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Client
+    at new NodeError (node:internal/errors:371:5)
+    at validateString (node:internal/validators:119:11)
+    at Object.join (node:path:429:7)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:5:39)
+    at Object.<anonymous> (C:\Programming\MooseBot_V13\bot.js:46:1)
+    at Module._compile (node:internal/modules/cjs/loader:1101:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:79:12)
+[28.9.2021 12.20.05] - [ERROR] - Error: ENOENT: no such file or directory, scandir 'C:\Programming\MooseBot_V13\util\events'
+[28.9.2021 12.21.22] - [ERROR] - TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Client
+    at new NodeError (node:internal/errors:371:5)
+    at validateString (node:internal/validators:119:11)
+    at Object.join (node:path:429:7)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:5:39)
+    at Object.<anonymous> (C:\Programming\MooseBot_V13\bot.js:46:1)
+    at Module._compile (node:internal/modules/cjs/loader:1101:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:79:12)
+[28.9.2021 12.21.22] - [ERROR] - Error: ENOENT: no such file or directory, scandir 'C:\Programming\MooseBot_V13\util\events'
+[28.9.2021 12.22.35] - [ERROR] - Error: ENOENT: no such file or directory, scandir 'C:\Programming\MooseBot_V13\util\events'
+[28.9.2021 12.59.19] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.00.15] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.00.53] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.01.05] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.02.11] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.02.55] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.03.49] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.06.05] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.08.18] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.08.50] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.09.42] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.14.29] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.15.46] - [ERROR] - TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Client
+    at new NodeError (node:internal/errors:371:5)
+    at validateString (node:internal/validators:119:11)
+    at Object.join (node:path:429:7)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:5:39)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:10:19)
+[28.9.2021 13.15.47] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.17.09] - [ERROR] - TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Client
+    at new NodeError (node:internal/errors:371:5)
+    at validateString (node:internal/validators:119:11)
+    at Object.join (node:path:429:7)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:5:39)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:10:19)
+[28.9.2021 13.17.09] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.17.50] - [ERROR] - TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Client
+    at new NodeError (node:internal/errors:371:5)
+    at validateString (node:internal/validators:119:11)
+    at Object.join (node:path:429:7)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:5:39)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:10:19)
+[28.9.2021 13.17.51] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.19.33] - [ERROR] - TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Client
+    at new NodeError (node:internal/errors:371:5)
+    at validateString (node:internal/validators:119:11)
+    at Object.join (node:path:429:7)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:5:39)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:11:19)
+[28.9.2021 13.19.33] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.20.54] - [ERROR] - TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Client
+    at new NodeError (node:internal/errors:371:5)
+    at validateString (node:internal/validators:119:11)
+    at Object.join (node:path:429:7)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:5:39)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:11:19)
+[28.9.2021 13.20.55] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.22.07] - [ERROR] - TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Client
+    at new NodeError (node:internal/errors:371:5)
+    at validateString (node:internal/validators:119:11)
+    at Object.join (node:path:429:7)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:5:39)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:12:19)
+[28.9.2021 13.22.08] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.22.38] - [ERROR] - TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Client
+    at new NodeError (node:internal/errors:371:5)
+    at validateString (node:internal/validators:119:11)
+    at Object.join (node:path:429:7)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:5:39)
+    at registerCommands (C:\Programming\MooseBot_V13\util\registerCommands.js:12:19)
+[28.9.2021 13.22.39] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.23.44] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 13.23.59] - [INFO] - Ready! Logged in as MooseBot#5832
+[28.9.2021 14.51.11] - [INFO] - Ready! Logged in as MooseBot#5832

@@ -1,0 +1,31 @@
+{
+    "owners": ["299192199843676171"],
+    "developers": ["299192199843676171"],
+
+    "prefix": ".",
+    "clientId": "798169647589490729",
+    "botMainDiscordServer": "565959084990267393",
+
+    "embedColor": [200,0,0],
+
+    "omitLockdownChannels":  "789604909578190869",
+    "omitLockdownRoles": "",
+
+    "SPAM_LIMIT": 5,
+    "SPAM_TRACK_TIME": 10000,
+    "SPAM_TIME": 5000,
+    "SPAM_MUTE_TIME": 3600000,
+
+    "DUPMSG_LIMIT": 3,
+    "DUPMSG_TRACK_TIME": 20000,
+    "DUPMSG_TIME": 10000,
+    "DUPMSG_MUTE_TIME": 3600000,
+
+    "creatorId": "299192199843676171",
+    "version": "1.0.1",
+    "library": "Discord.js_V13",
+    "Creator": "[BWC] Patrick#8788",
+    "website": "https://the-bwc.com",
+    "discord": "https://discord.the-bwc.com",
+    "server_location": "New York, NY, USA"
+}
