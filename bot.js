@@ -39,12 +39,13 @@ if (process.env.NODE_ENV !== 'production') {
     }))
 }
 
-client.commands = new Collection();
+module.exports = client;
 
-registerEvents(__dirname, './events', client)
-    .catch(e => client.logger.error(e.stack))
-registerCommands(__dirname, './commands', false, client)
-    .catch(e => client.logger.error(e.stack))
+client.commands = new Collection();
+client.slashCommands = new Collection();
+client.config = require('./settings.json')
+
+require("./handler")(client);
 
 client.login(process.env.TOKEN)
     .catch(err => client.logger.error(err))

@@ -9,12 +9,6 @@ async function functionWrapper() {
     await registerCommands(__dirname, './commands', true)
     .then(command => {
         commands.push(command)
-        commands.push({
-            name: 'test',
-            description: "Testing unknown command",
-            options: [],
-            default_permission: undefined
-        })
     })
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
