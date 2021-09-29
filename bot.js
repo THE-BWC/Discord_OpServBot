@@ -1,7 +1,5 @@
 const { Client, Intents, Collection } = require('discord.js')
 const Winston = require('winston')
-const { registerCommands } = require('./util/registerCommands.js')
-const { registerEvents } = require('./util/registerEvents.js')
 require('dotenv').config()
 
 const client = new Client({
