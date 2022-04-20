@@ -25,7 +25,7 @@ class API {
         }
 
 
-        app.post('/role/sync', async (req, res) => {
+        app.post('/bot/api/v1/role/sync', async (req, res) => {
             if (!Object.keys(req.body).length) {
                 return res.status(400).json({
                     ERROR_EmptyReqBody: "Request body cannot be empty"
@@ -51,7 +51,7 @@ class API {
 
         })
 
-        app.post("/role/give", async (req, res) => {
+        app.post("/bot/api/v1/role/give", async (req, res) => {
             if (!Object.keys(req.body).length) {
                 return res.status(400).json({
                     ERROR_EmptyReqBody: "Request body cannot be empty"
@@ -76,7 +76,7 @@ class API {
 
         })
 
-        app.post("/role/remove", async (req, res) => {
+        app.post("/bot/api/v1/role/remove", async (req, res) => {
             if (!Object.keys(req.body).length) {
                 return res.status(400).json({
                     ERROR_EmptyReqBody: "Request body cannot be empty"
