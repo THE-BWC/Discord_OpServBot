@@ -1,22 +1,54 @@
 {
   "name": "moosebot_v13",
   "version": "1.0.0",
-  "description": "",
+  "description": "Discord Moderation Bot for Black Widow Company",
+  "license": "MIT",
+  "private": true,
+  "keywords": [
+    "Discord",
+    "Bot",
+    "Moderation",
+    "Discord.js",
+    "Database",
+    "Sequelize",
+    "Winston",
+    "Black Widow Company",
+    "BWC"
+  ],
+  "homepage": "https://github.com/PatrickPedersen/Moosebot_djsV13#readme",
+  "bugs": {
+    "url": "https://github.com/PatrickPedersen/MooseBot_djsV13/issues"
+  },
+  "author": "Patrick Pedersen <patricksoeholtpedersen@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PatrickPedersen/MooseBot_djsV13.git"
+  },
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js",
-    "dev": "nodemon bot.js"
+    "dev": "nodemon bot.js",
+    "dev-api": "nodemon api/app.js",
+    "deploy": "node deploy-commands.js"
   },
-  "author": "",
-  "license": "ISC",
+  "devDependencies": {
+    "dotenv": "^14.2.0",
+    "nodemon": "^2.0.15"
+  },
   "dependencies": {
-    "@discordjs/builders": "^0.6.0",
-    "@discordjs/rest": "^0.1.0-canary.0",
-    "discord-api-types": "^0.23.1",
-    "discord.js": "^13.1.0",
-    "dotenv": "^10.0.0",
+    "@discordjs/builders": "^0.11.0",
+    "@discordjs/rest": "^0.2.0-canary.0",
+    "cli-table": "^0.3.11",
+    "cron": "^1.8.2",
+    "discord-api-types": "^0.26.1",
+    "discord.js": "^13.3.1",
+    "express": "^4.17.3",
+    "express-basic-auth": "^1.2.1",
     "glob": "^7.2.0",
-    "nodemon": "^2.0.13",
+    "moment": "^2.29.1",
+    "ms": "^2.1.3",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.14.0",
     "winston": "^3.3.3"
   }
 }

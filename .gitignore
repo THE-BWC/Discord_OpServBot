@@ -1,4 +1,7 @@
+/.idea
 /node_modules
 .env
 package-lock.json
-moosebot.log
+OpservBot.log
+.pem
+/api/sslcert/

@@ -1,72 +1,60 @@
-const { embedColor } = require('../settings.json')
-const { MessageEmbed } = require('discord.js')
-const client = require('../bot')
+const { Collection } = require('discord.js')
+const cooldowns = new Map()
 
-client.on('interactionCreate', async (interaction) => {
-    if (interaction.isCommand()) {
-        await interaction.deferReply({ ephemeral: false }).catch(() => {})
+module.exports = {
+	name: 'interactionCreate',
+	once: false,
+	async execute(client, interaction) {
+		if (!interaction.isCommand()) return
 
-        const cmd = client.slashCommands.get(interaction.commandName)
-        if (!cmd) {
-            const embed = new MessageEmbed()
-            .setColor(embedColor)
-            .setAuthor(`${client.user.username} Help`, interaction.guild.iconURL())
-            .setFooter(`Requested by ${interaction.member.user.tag}`, interaction.member.user.displayAvatarURL())
-            .setThumbnail(client.user.avatarURL())
-            .setTimestamp()
-            .setTitle('Unknown Command')
-            .setDescription(`Use \`/help\` to view the command list`)
+        const command = client.commands.get(interaction.commandName)
 
-            await interaction.reply({ephemeral: true, embeds: [embed] })
+        if (!command) return
+
+        // COOLDOWN HANDLER
+        if (!cooldowns.has(interaction.commandName)){
+            cooldowns.set(interaction.commandName, new Collection())
         }
 
-        const args = []
-        for (let option of interaction.options.data) {
-            if (option.type === "SUB_COMMAND") {
-                if (option.name) args.push(option.name)
-                option.options?.forEach((x) => {
-                    if (x.value) args.push(x.value)
-                })
-            } else if (option.value) args.push(option.value)
+        const currentTime = Date.now()
+        const timeStamps = cooldowns.get(interaction.commandName)
+        const cooldownAmount = (command.cooldown) * 1000
+
+        if (timeStamps.has(interaction.user.id)) {
+            const expirationTime = timeStamps.get(interaction.user.id) + cooldownAmount
+
+            if (currentTime < expirationTime) {
+                const timeLeft = (expirationTime - currentTime) / 1000
+                return interaction.reply(`Please wait ${timeLeft.toFixed(1)} seconds before using ${interaction.commandName}`)
+            }
         }
-        interaction.member = interaction.guild.members.cache.get(interaction.user.id)
 
-        cmd.run(client, interaction, args)
-    }
+        timeStamps.set(interaction.user.id, currentTime)
+        setTimeout(() => timeStamps.delete(interaction.user.id), cooldownAmount)
 
-    if (interaction.isContextMenu()) {
-        await interaction.deferReply({ ephemeral: fale })
-        const command = client.slashCommands.get(interaction.commandName)
-        if (command) command.run(client, interaction)
-    }
-})
+        // PERMISSIONS CHECK
+        if (command.permission) {
+            let author = interaction.guild.members.cache.get(interaction.user.id)
+            if (!author.permissions.has(command.permission)) {
+                if (interaction.deferred) {
+                    await interaction.followUp({ content: "You don't have the right permissions for this command.", ephemeral: true });
+                    return
+                }
+                await interaction.reply({ content: "You don't have the right permissions for this command.", ephemeral: true });
+                return
+            }
+        }
 
-// module.exports = {
-// 	name: 'interactionCreate',
-// 	once: false,
-// 	async execute(client, interaction) {
-// 		if (!interaction.isCommand()) return
-
-//         const command = client.commands.get(interaction.commandName)
-
-//         if (!command) {
-//             const embed = new MessageEmbed()
-//             .setColor(embedColor)
-//             .setAuthor(`${client.user.username} Help`, interaction.guild.iconURL())
-//             .setFooter(`Requested by ${interaction.member.user.tag}`, interaction.member.user.displayAvatarURL())
-//             .setThumbnail(client.user.avatarURL())
-//             .setTimestamp()
-//             .setTitle('Unknown Command')
-//             .setDescription(`Use \`/help\` to view the command list`)
-
-//             await interaction.reply({ephemeral: true, embeds: [embed] })
-//         } else {
-//             try {
-//                 await command.execute(interaction)
-//             } catch (err) {
-//                 await interaction.reply({content: 'There was an error while executing this command!', ephemeral: true});
-//                 client.logger.error(err.stack)
-//             }
-//         }       
-// 	}
-// };
+        try {
+            await command.execute(client, interaction)
+        } catch (err) {
+            if (interaction.deferred) {
+                await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+                client.logger.error(err.stack)
+                return
+            }
+            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+            client.logger.error(err.stack)
+        }
+	}
+};
