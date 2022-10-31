@@ -2,13 +2,22 @@ const https = require('https');
 const fs = require('fs');
 const express = require('express')
 const basicAuth = require('express-basic-auth')
+const Observer = require('./services/observer')
 
 class API {
     init(client) {
         let app = express();
+        app.set('client', client)
+
+        if (process.env.NODE_EXTRA_CA_CERTS) {
+            https.globalAgent.options.ca = [
+                fs.readFileSync(process.env.NODE_EXTRA_CA_CERTS),
+            ]
+        }
+
         const options = {
-            key: fs.readFileSync(__dirname + '/sslcert/example.com+5-key.pem'),
-            cert: fs.readFileSync(__dirname + '/sslcert/example.com+5.pem')
+            cert: fs.readFileSync(`${client.config.SSLFolder}\\${client.config.SSLDomain}.crt`),
+            key: fs.readFileSync(`${client.config.SSLFolder}\\${client.config.SSLDomain}.key`)
         };
 
         app.use(express.json())
@@ -39,70 +48,41 @@ class API {
                 })
             }
 
-            await client.discordRolesController.syncRole(client, userId)
-                .then(result => {
-                    return res.status(200).json(result)
-                })
-                .catch(err => {
-                    client.logger.error(err.stack)
-                    return res.status(500).json(err)
-                })
+        const routerV1 = require('./routes/routerV1')
+        app.use('/bot/api/v1', routerV1)
 
+        let server,
+            observer = new Observer()
 
+        try {
+            server = https.createServer(options, app).listen(client.config.apiPort, () => {
+                client.logger.info(`[API] - Api running on port ${client.config.apiPort}`)
+            })
+        } catch (err) {
+            client.logger.error(err.stack)
+        }
+
+        observer.on('cert-changed', () => {
+            setTimeout(() => {
+                let cert = fs.readFileSync(`${client.config.SSLFolder}\\${client.config.SSLDomain}.crt`),
+                    key = fs.readFileSync(`${client.config.SSLFolder}\\${client.config.SSLDomain}.key`)
+                updateContext(cert, key)
+            }, 5000)
         })
+        observer.watchFolder(client.config.SSLFolder, client)
 
-        app.post("/bot/api/v1/role/give", async (req, res) => {
-            if (!Object.keys(req.body).length) {
-                return res.status(400).json({
-                    ERROR_EmptyReqBody: "Request body cannot be empty"
+        function updateContext(cert, key) {
+            try {
+                server.setSecureContext({
+                    cert: cert,
+                    key: key
                 })
+                client.logger.info('[API] - [CERTIFICATE] - Certificate has been updated')
+            } catch (err) {
+                client.logger.error(err.stack)
             }
 
-            const {userId} = req.body
-            if (!userId) {
-                return res.status(400).json({
-                    ERROR_NoUserId: "Ensure you sent the userId"
-                })
-            }
-
-            await client.discordRolesController.giveRole(client, userId)
-                .then(result => {
-                    return res.status(200).json(result)
-                })
-                .catch(err => {
-                    client.logger.error(err.stack)
-                    return res.status(500).json(err)
-                })
-
-        })
-
-        app.post("/bot/api/v1/role/remove", async (req, res) => {
-            if (!Object.keys(req.body).length) {
-                return res.status(400).json({
-                    ERROR_EmptyReqBody: "Request body cannot be empty"
-                })
-            }
-
-            const { userId } = req.body
-            if (!userId) {
-                return res.status(400).json({
-                    ERROR_NoUserId: "Ensure you sent the userId"
-                })
-            }
-
-            await client.discordRolesController.removeRole(client, userId)
-                .then(result => {
-                    return res.status(200).json(result)
-                })
-                .catch(err => {
-                    client.logger.error(err.stack)
-                    return res.status(500).json(err)
-                })
-        })
-
-        https.createServer(options, app).listen(client.config.apiPort, () => {
-            console.log(`Api running on port ${client.config.apiPort}`)
-        })
+        }
     }
 }
 
