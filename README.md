@@ -3,6 +3,7 @@ Main Discord bot for the Opserv Integration project. This bot allows for Opserv 
 
 ## Requirements
 - Node.js (https://nodejs.org/en/download/) (v16.9.0 or higher)
+- Discord.js (https://discord.js.org/#/) (v13.3.1 or higher)
 - NPM (https://www.npmjs.com/get-npm) (should be installed with Node.js)
 - PM2 (https://pm2.keymetrics.io/docs/usage/quick-start/) (Optional) - Used to run the application as a service.
 - Discord Bot Token (https://discord.com/developers/applications) - Used to authenticate the bot with Discord.
