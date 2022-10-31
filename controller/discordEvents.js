@@ -1,35 +1,253 @@
-// const { MessageEmbed } = require('discord.js')
-// const { chunkArray } = require('../functions')
-// const { embedColor } = require('../settings.json')
-// const { unixFormat, notifyTime } = require('../functions')
+// noinspection DuplicatedCode
+const htmlToText = require('html-to-text')
 
-// noinspection JSUnresolvedVariable
 class DiscordEventsController {
-    async CreateEvent(client) {
-        let data = await client.botProvider.fetchOps()
-        if (data === undefined || !data.length || data.length === 0) return;
+    /**
+     * Syncs all non OPSEC operations across Opserv and Discord
+     * @param client
+     * @returns {Promise<void>}
+     */
+    async sync(client) {
+        client.logger.info(`[FUNCTION] - Sync function used`);
+        const operations = await client.xenProvider.fetchOps(true)
 
-        let guildData = await client.botProvider.fetchGuild('891359038657396787')
-        let guild = await client.guilds.fetch(guildData.dataValues.id)
+        if (operations.length === 1) {
+            await this.updateDiscordEvent(client, operations[0].operation_id)
+        } else {
+            let array = []
+            for (let op of operations) {
+                array.push({operation_id: op.operation_id})
+            }
+            await this.updateDiscordEvents(client, array)
+        }
 
+    }
 
+    /**
+     * Takes an operation ID and creates a Discord Event for that operation.
+     * @param client
+     * @param {String | Number} operationId
+     * @returns {Promise<void>}
+     */
+    async createEvent(client, operationId) {
+        client.logger.info(`[FUNCTION] - CreateEvent function used`);
+        const operation = await client.xenProvider.fetchOperationById(operationId, true)
+        await DiscordEventsController.#createDiscordEvent(client, operation[0])
+            .catch(err => client.logger.error(err.stack))
+    }
 
+    /**
+     * Updates a single Discord event
+     * @param client
+     * @param {String | Number} operationId
+     * @returns {Promise<void>}
+     */
+    async updateDiscordEvent(client, operationId) {
+        client.logger.info(`[FUNCTION] - UpdateDiscordEvent function used`);
 
+        const guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        let operationData = await client.xenProvider.fetchOperationById(operationId)
+        if (operationData.length === 0) {
+            client.logger.info(`[RETURNED] - OperationData length is 0. Returned`)
+            return
+        }
+        operationData = operationData[0]
+        const event = await client.botProvider.fetchEventEntry(operationId)
+        if (operationData === undefined && event) {
+            await this.deleteDiscordEvent(client, operationId)
+            return
+        }
+        if (operationData === undefined) {
+            client.logger.info(`[RETURNED] - Operation Object was undefined. Returned`)
+            return
+        }
 
-        await guild.scheduledEvents.create({
-            name: 'Name given as string',
-            description: 'Description given as string',
-            scheduledStartTime: new Date(1650369600*1000),
-            scheduledEndTime: new Date(1650376800*1000),
+        if (event) {
+            if (operationData.edited_date === event.operation_edited_date) return
+            const currentEvent = await guild.scheduledEvents.fetch(event.event_id)
+            await DiscordEventsController.#updateEvent(client, guild, currentEvent, operationId, operationData)
+        } else {
+            await DiscordEventsController.#createDiscordEvent(client, operationData)
+        }
+    }
+
+    //
+    /**
+     * Updates Discord Events with new information if the operation was updated
+     * @param client
+     * @param {Array.<Object>} operations
+     * @returns {Promise<void>}
+     */
+    async updateDiscordEvents(client, operations) {
+        client.logger.info(`[FUNCTION] - UpdateDiscordEvents function used`);
+        const guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        const currentEvents = guild.scheduledEvents.cache.map(event => event)
+        for (const op of operations) {
+            let fetchedEvent = await client.botProvider.fetchEventEntry(op.operation_id)
+            if (fetchedEvent) {
+                const operationDataArray = await client.xenProvider.fetchOperationById(op.operation_id)
+                const operationData = operationDataArray[0]
+
+                if (operationData.edited_date !== fetchedEvent.operation_edited_date) {
+                    client.logger.info(`[FUNCTION][INFO] - Discord Event Updated`);
+                    const event = currentEvents.find(e => e.id === fetchedEvent.event_id)
+                    await DiscordEventsController.#updateEvent(client, guild, event, op.operation_id, operationData)
+                }
+            } else {
+                const operationDataArray = await client.xenProvider.fetchOperationById(op.operation_id)
+                await DiscordEventsController.#createDiscordEvent(client, operationDataArray[0])
+            }
+        }
+    }
+
+    /**
+     * Deletes a Discord Event from Discord and Database Table
+     * @param client
+     * @param {String | Number} operationId
+     * @returns {Promise<void>}
+     */
+    async deleteDiscordEvent(client, operationId) {
+        client.logger.info(`[FUNCTION] - DeleteDiscordEvent function used`);
+        const guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        const eventId = await client.botProvider.fetchEventEntry(operationId)
+
+        if (eventId === null) {
+            client.logger.info(`[RETURNED] EventID was null. Returning`)
+        }
+        const event = await guild.scheduledEvents.fetch(eventId.event_id)
+
+        if (event) {
+            try {
+                await guild.scheduledEvents.delete(event)
+                await client.botProvider.deleteEventEntry(operationId)
+            } catch (err) {
+                client.logger.error(err.stack)
+            }
+        }
+
+    }
+
+    /**
+     * Updates a Discord Event
+     * @param client
+     * @param {Object} guild
+     * @param {Object} currentEvent
+     * @param {String | Number} operationId
+     * @param {Object} operationData
+     * @returns {Promise<void>}
+     */
+    static async #updateEvent(client, guild, currentEvent, operationId, operationData) {
+        client.logger.info(`[FUNCTION] - [PRIVATE] UpdateEvent function used`);
+        try {
+            if (operationData.date_start < Date.now()/1000) {
+                client.logger.info(`[RETURNED] Operations Start Date is in the past. Deleting existing Discord Event and returning.`)
+                await client.discordEventsController.deleteDiscordEvent(client, operationId)
+                return
+            }
+
+            await client.botProvider.updateEventEntry(operationId, operationData.edited_date)
+            let html = await DiscordEventsController.#parseHTML(client, operationData.description)
+            let options
+            if (operationData.discord_voice_channel_id !== "") {
+                const voiceChannel = await guild.channels.fetch(operationData.discord_voice_channel_id)
+                options = {
+                    name: operationData.operation_name,
+                    description: html,
+                    scheduledStartTime: new Date(operationData.date_start * 1000),
+                    scheduledEndTime: new Date(operationData.date_end * 1000),
+                    entityType: "VOICE",
+                    privacyLevel: "GUILD_ONLY",
+                    channel: voiceChannel
+                }
+            } else {
+                options = {
+                    name: operationData.operation_name,
+                    description: html,
+                    scheduledStartTime: new Date(operationData.date_start * 1000),
+                    scheduledEndTime: new Date(operationData.date_end * 1000),
+                    entityType: "EXTERNAL",
+                    privacyLevel: "GUILD_ONLY",
+                    channel: null,
+                    entityMetadata: {
+                        location: operationData.discord_event_location ? operationData.discord_event_location : "Hmm..."
+                    }
+                }
+            }
+
+            await guild.scheduledEvents.edit(currentEvent, options)
+        } catch (err) {
+            client.logger.error(err.stack)
+        }
+    }
+
+    /**
+     * Creates a Discord Event
+     * @param client
+     * @param {Object} operation
+     * @returns {Promise<void>}
+     */
+    static async #createDiscordEvent(client, operation) {
+        client.logger.info(`[FUNCTION] - [PRIVATE] CreateDiscordEvent function used`);
+
+        if (operation.date_start < Date.now()/1000) {
+            client.logger.info(`[RETURNED] - Operation happened in the past. Returned`)
+            return
+        }
+        let guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+            .catch(err => client.logger.error(err.stack))
+
+        // noinspection DuplicatedCode
+        let html = await DiscordEventsController.#parseHTML(client, operation.description)
+        let voiceChannel
+        if (operation.discord_voice_channel_id !== "") {
+            voiceChannel = await guild.channels.fetch(operation.discord_voice_channel_id)
+        }
+        if (operation.discord_event_location === "") {
+            operation.discord_event_location = "Hmm..."
+        }
+
+        let options = operation.discord_voice_channel_id !== "" ? {
+            name: operation.operation_name,
+            description: html,
+            scheduledStartTime: new Date(operation.date_start * 1000),
+            scheduledEndTime: new Date(operation.date_end * 1000),
+            entityType: "VOICE",
+            privacyLevel: "GUILD_ONLY",
+            channel: voiceChannel
+        } : {
+            name: operation.operation_name,
+            description: html,
+            scheduledStartTime: new Date(operation.date_start * 1000),
+            scheduledEndTime: new Date(operation.date_end * 1000),
             entityType: "EXTERNAL",
             privacyLevel: "GUILD_ONLY",
-            reason: 'This is a reason??',
             entityMetadata: {
-                location: 'Location as a string'
+                location: operation.discord_event_location
             }
-        })
+        }
 
-        client.logger.info(`- [FUNCTION] - CreateEvents function used`);
+        try {
+            let event = await guild.scheduledEvents.create(options)
+            await client.botProvider.createEventEntry(client.config.settings_guildId_dev2, event.id, operation.operation_id, operation.edited_date)
+        } catch (err) {
+            client.logger.error(err.stack)
+        }
+    }
+
+    /**
+     * Parses HTML code to plain text
+     * @param client
+     * @param {String} text
+     * @returns {Promise<void>}
+     */
+    static async #parseHTML(client, text) {
+        client.logger.info(`[FUNCTION] - [PRIVATE] ParseHTML function used`);
+        try {
+            return htmlToText.convert(text)
+        } catch (err) {
+            client.logger.error(err.stack)
+        }
+
     }
 }
 
