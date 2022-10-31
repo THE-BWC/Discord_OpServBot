@@ -1,8 +1,7 @@
 {
   "name": "moosebot_v13",
   "version": "1.0.0",
-  "description": "Discord Moderation Bot for Black Widow Company",
-  "license": "MIT",
+  "description": "Main Discord Bot for Black Widow Company",
   "private": true,
   "keywords": [
     "Discord",
@@ -15,14 +14,11 @@
     "Black Widow Company",
     "BWC"
   ],
-  "homepage": "https://github.com/PatrickPedersen/Moosebot_djsV13#readme",
-  "bugs": {
-    "url": "https://github.com/PatrickPedersen/MooseBot_djsV13/issues"
-  },
-  "author": "Patrick Pedersen <patricksoeholtpedersen@gmail.com>",
+  "homepage": "https://git.the-bwc.com/Black_Widow_Company/Discord_OpServBot#readme",
+  "author": "Patrick",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PatrickPedersen/MooseBot_djsV13.git"
+    "url": "git+https://git.the-bwc.com/Black_Widow_Company/Discord_OpServBot.git"
   },
   "main": "bot.js",
   "scripts": {
@@ -38,6 +34,7 @@
   "dependencies": {
     "@discordjs/builders": "^0.11.0",
     "@discordjs/rest": "^0.2.0-canary.0",
+    "chokidar": "^3.5.3",
     "cli-table": "^0.3.11",
     "cron": "^1.8.2",
     "discord-api-types": "^0.26.1",
@@ -45,6 +42,7 @@
     "express": "^4.17.3",
     "express-basic-auth": "^1.2.1",
     "glob": "^7.2.0",
+    "html-to-text": "^8.2.0",
     "moment": "^2.29.1",
     "ms": "^2.1.3",
     "mysql2": "^2.3.3",
