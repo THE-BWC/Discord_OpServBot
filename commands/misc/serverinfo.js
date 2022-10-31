@@ -1,7 +1,5 @@
 const { Client, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { embedColor } = require('../../settings.json')
-const { chunkArray } = require('../../functions');
 const moment = require('moment');
 
 module.exports = {
@@ -45,7 +43,7 @@ module.exports = {
 
                 let embed = new MessageEmbed()
                     .setDescription(`**Guild information for __${interaction.guild.name}__**`)
-                    .setColor(embedColor)
+                    .setColor(client.settings.embedColor)
                     .setThumbnail(interaction.guild.iconURL({dynamic: true}))
                     .addField('General',
                         `**❯ Name:** ${interaction.guild.name} | ID: ${interaction.guild.id}\n` +
@@ -82,7 +80,7 @@ module.exports = {
                     ,)
 
                 if (roles.length > 45) {
-                    let chunkedRoles = chunkArray(roles, 40)
+                    let chunkedRoles = client.utilities.chunkArray(roles, 40)
                     embed.addField(`Roles [${roles.length - 1}]`, chunkedRoles[0].join(" "),)
                     for (let i = 1; i < chunkedRoles.length; i++) {
                         embed.addField(`Roles Continued`, chunkedRoles[i].join(" "),)

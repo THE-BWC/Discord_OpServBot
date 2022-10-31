@@ -1,7 +1,5 @@
 const { Client, CommandInteraction, MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { embedColor } = require('../../settings.json')
-const { duration } = require('../../functions')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,9 +17,9 @@ module.exports = {
         interaction.deferReply()
             .then(async () => {
                 let embed = new MessageEmbed()
-                    .setColor(embedColor)
+                    .setColor(client.settings.embedColor)
                     .setTitle('Uptime!')
-                    .setDescription(`I have been online for: ${duration(client.uptime)}`)
+                    .setDescription(`I have been online for: ${client.utilities.duration(client.uptime)}`)
 
 
                 await interaction.followUp({embeds: [embed]})

@@ -1,14 +1,12 @@
-// noinspection JSUnresolvedVariable
-
-const { Client, CommandInteraction } = require('discord.js');
-const { SlashCommandBuilder } = require("@discordjs/builders");
-const Table = require("cli-table");
+const { Client, CommandInteraction } = require('discord.js')
+const { SlashCommandBuilder } = require("@discordjs/builders")
+const Table = require('cli-table')
 
 module.exports = {
     permission: ["ADMINISTRATOR"],
     data: new SlashCommandBuilder()
         .setName('setgamechannel')
-        .setDescription('Sets a games announcement channel for OpServ announcements')
+        .setDescription('Sets a games annoucement channel for OpServ OPSEC announcements')
         .addStringOption(gameid =>
             gameid.setName('gameid')
                 .setDescription('Opserv Game ID')
@@ -34,16 +32,13 @@ module.exports = {
 
                 await client.botProvider.createGameChannelEntry(interaction.guild.id, gameId, channelId)
 
-                // noinspection DuplicatedCode
                 let gameChannels = await client.botProvider.fetchGameChannels(interaction.guild.id)
                 let gameInfo = await client.xenProvider.fetchGames()
                 let games = []
 
                 for (let id in gameChannels) {
-                    // noinspection JSUnresolvedVariable
-                    let data = gameInfo.find(r => r.game_id === parseInt(gameChannels[id].dataValues.id))
-                    // noinspection JSPrimitiveTypeWrapperUsage
-                    data.channel_id = gameChannels[id].dataValues.channel_id
+                    let data = gameInfo.find(r => r.game_id === parseInt(gameChannels[id].game_id))
+                    data.channel_id = gameChannels[id].channel_id
                     games.push(data)
                 }
 
@@ -52,13 +47,11 @@ module.exports = {
                         'bottom': '', 'bottom-mid': '', 'bottom-left': '', 'bottom-right': '',
                         'left': '' ,'left-mid': '' ,'mid': '' ,'mid-mid': '',
                         'right': '' ,'right-mid': '' ,'middle': ''},
-                    colWidths: [5, 8]
-                });
+                    colWidths: [10, 8]
+                })
 
-                // noinspection JSUnresolvedFunction
-                table.push(['ID', 'TAG', 'Channel ID'])
+                table.push(['Game ID', 'TAG', 'Channel ID'])
                 for (let game in games) {
-                    // noinspection JSUnresolvedFunction
                     table.push([games[game].game_id, games[game].tag, games[game].channel_id])
                 }
 
