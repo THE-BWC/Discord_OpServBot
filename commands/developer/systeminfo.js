@@ -30,8 +30,8 @@ module.exports = {
                         + `\nModel: ${core.model}`
                         + `\nSpeed: ${core.speed}Mhz`)
                     .addField(`**❯ Memory:**`,
-                        `Total: ${client.functions.formatBytes(process.memoryUsage().heapTotal)}`
-                        + `\nUsed: ${client.functions.formatBytes(process.memoryUsage().heapUsed)}`)
+                        `Total: ${client.utilities.formatBytes(process.memoryUsage().heapTotal)}`
+                        + `\nUsed: ${client.utilities.formatBytes(process.memoryUsage().heapUsed)}`)
                     .setTimestamp()
 
                 await interaction.followUp({embeds: [embed]})
