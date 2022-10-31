@@ -54,20 +54,28 @@ const client = new Client({
     }
 })
 
-// Logger:
+/**
+ * Logger
+ */
 client.logger = Winston.createLogger({
     transports: [
-        new Winston.transports.File({ filename: 'OpservBot.log' })
+        new Winston.transports.File({ filename: 'DiscordIntegration.log' })
     ],
     format: Winston.format.printf((log) => `[${new Date().toLocaleString()}] - [${log.level.toUpperCase()}] - ${log.message}`)
 })
 
+/**
+ * Outputs to console during Development
+ */
 if (process.env.NODE_ENV !== 'production') {
     client.logger.add(new Winston.transports.Console({
         format: Winston.format.simple()
     }))
 }
 
+/**
+ * Creates collection of commands
+ */
 client.commands = new Collection();
 const commandFolders = fs.readdirSync('./commands')
 for (const folder of commandFolders) {
@@ -85,6 +93,9 @@ for (const folder of commandFolders) {
     }
 }
 
+/**
+ * loads all of the events that we are listening to
+ */
 const eventFolders = fs.readdirSync('./events')
 for (const folder of eventFolders) {
     if (fs.lstatSync(`./events/${folder}`).isDirectory()){
@@ -123,6 +134,7 @@ for (const folder of eventFolders) {
 
 /**
  * Holds the settings
+ * @type {Settings}
  */
 client.config = settings
 
