@@ -5,7 +5,7 @@ const basicAuth = require('express-basic-auth')
 const Observer = require('./services/observer')
 
 class API {
-    init(client) {
+    async init(client) {
         let app = express();
         app.set('client', client)
 
@@ -21,9 +21,9 @@ class API {
         };
 
         app.use(express.json())
-        app.use(express.urlencoded({ extended: true }))
+        app.use(express.urlencoded({extended: true}))
         app.use(basicAuth({
-            users: { 'opserv': 'test1234' },
+            users: {'opserv': 'test1234'},
             unauthorizedResponse: getUnauthorizedResponse
         }))
 
@@ -33,20 +33,11 @@ class API {
                 : 'ERROR - No API credentials provided'
         }
 
-
-        app.post('/bot/api/v1/role/sync', async (req, res) => {
-            if (!Object.keys(req.body).length) {
-                return res.status(400).json({
-                    ERROR_EmptyReqBody: "Request body cannot be empty"
-                })
-            }
-            console.log(req.body)
-            const {userId} = req.body
-            if (!userId) {
-                return res.status(400).json({
-                    ERROR_NoUserId: "Ensure you sent the userId"
-                })
-            }
+        app.get('/', async (req, res) => {
+            res.json({
+                message: "Hello There"
+            })
+        })
 
         const routerV1 = require('./routes/routerV1')
         app.use('/bot/api/v1', routerV1)
