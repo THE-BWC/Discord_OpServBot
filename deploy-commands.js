@@ -1,4 +1,4 @@
-const { settings_clientId, settings_guildId } = require('./settings.json')
+const { settings_clientId, botMainDiscordServer } = require('./settings.json')
 const { REST } = require('@discordjs/rest')
 const { Routes } = require('discord-api-types/v9')
 const fs = require('fs')
@@ -22,7 +22,7 @@ for (const folder of commandFolders) {
 }
 
 const clientId = settings_clientId
-const guildId = settings_guildId //"891359038657396787"
+const guildId = botMainDiscordServer
 
 // noinspection JSClosureCompilerSyntax,JSCheckFunctionSignatures
 const rest = new REST({ version: 9}).setToken(process.env.TOKEN);
