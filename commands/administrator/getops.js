@@ -16,8 +16,8 @@ module.exports = {
     async execute(client, interaction, args) {
         interaction.deferReply({ ephemeral: true })
             .then(async () => {
-                await client.masterController.getOps(client)
-                await interaction.followUp({content: 'Operations acquired from DB', ephemeral: true})
+                await client.discordOpsecOpPosting.getOps(client)
+                await interaction.followUp({ content: 'Operations acquired from DB', ephemeral: true })
             })
     }
 }

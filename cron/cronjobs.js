@@ -4,7 +4,7 @@ class CronJobs {
     // Sends operation list every day at 19:00:00 Opserv Time
     at19_oClock(client) {
         return new CronJob('00 00 19 * * *', () => {
-            client.masterController.getOpList(client)
+            client.discordOpsecOpPosting.sendOpLists(client)
                 .catch(err => client.logger.error(err.stack))
         }, null, true, 'America/New_York');
     }
@@ -12,7 +12,7 @@ class CronJobs {
     // Grab new Operations every 30 minutes
     every30min(client) {
         return new CronJob('0 */30 * * * *', () => {
-            client.masterController.getOps(client)
+            client.discordOpsecOpPosting.getOps(client)
                 .catch(err => client.logger.error(err.stack))
         }, null, true, 'America/New_York');
     }
@@ -20,7 +20,7 @@ class CronJobs {
     // Checks every 5 minutes for any ops that require notifications to be sent.
     notify5min(client) {
         return new CronJob('0 */1 * * * *', () => {
-            client.masterController.notify(client)
+            client.discordOpsecOpPosting.notify(client)
                 .catch(err => client.logger.error(err.stack))
         }, null, true, 'America/New_York');
     }
