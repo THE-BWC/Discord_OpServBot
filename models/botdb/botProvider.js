@@ -10,7 +10,7 @@ const Operation = require('./operation')
 const GameChannel = require('./game_channel')
 
 class BotSettingsProvider {
-    async init(client) {
+    async init(client, forceSync = false) {
         this.client = client
 
         Guild.hasMany(Locked_channel)
@@ -20,8 +20,13 @@ class BotSettingsProvider {
         Guild.hasMany(DiscordOpsecRoles)
         Guild.hasMany(GameChannel)
 
-        //bot.sync({force: true}).catch(err => console.log(err))
-        //bot.sync().catch(err => console.log(err))
+        if (forceSync) {
+            await bot.sync({ force: true })
+                .catch(err => console.log(err))
+        } else {
+            await bot.sync()
+                .catch(err => console.log(err))
+        }
 
         try {
             await bot.authenticate();
