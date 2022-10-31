@@ -1,12 +1,17 @@
-module.exports = {
+/** Class representing Utilities. */
+class Utilities {
 
     /**
      * Takes a dynamic size and splits it into n size groupings.
+     * @name chunkNumber
+     * @function
+     * @param {Number} number
+     * @param {Number} n
+     *
      * @example
      * chunkNumber(18,12)
      * returns [12,6]
-     * @param {Number} number
-     * @param {Number} n
+     *
      * @returns {Array} - Array with the sizes
      */
     chunkNumber(number, n) {
@@ -15,12 +20,16 @@ module.exports = {
             array.pop()
         }
         return array
-    },
+    }
 
     /**
      * Takes an Array and splits it into chunks(Arrays) based on the size(Length) specified.
+     * @name chunkArray
+     * @function
+     *
      * @param {Array} array
      * @param {Number} size
+     *
      * @returns {Array} - Returns an Array with the chunked arrays inside.
      */
     chunkArray(array, size) {
@@ -31,11 +40,15 @@ module.exports = {
             index += size;
         }
         return chunked_arr;
-    },
+    }
 
     /**
      * Takes a unix timestamp and translates to the appropriate Date Time format.
+     * @name unixFormat
+     * @function
+     *
      * @param {Number} unix
+     *
      * @returns {String} - Returns a string with the correct Date Time format.
      */
     unixFormat(unix) {
@@ -49,11 +62,15 @@ module.exports = {
             timeZone: 'America/New_York'
         }
         return new Intl.DateTimeFormat('en-US', options).format(unix * 1000)
-    },
+    }
 
     /**
      * Takes bot uptime in ms and converts to human-readable time.
+     * @name duration
+     * @function
+     *
      * @param {Number} ms
+     *
      * @returns {String} - days, hours, minutes, seconds
      */
     duration(ms) {
@@ -62,11 +79,15 @@ module.exports = {
         const hrs = Math.floor((ms / (1000 * 60 * 60)) % 60).toString();
         const days = Math.floor((ms / (1000 * 60 * 60 * 24)) % 60).toString();
         return `${days.padStart(1, '0')} days, ${hrs.padStart(2, '0')} hours, ${min.padStart(2, '0')} minutes, ${sec.padStart(2, '0')} seconds, `;
-    },
+    }
 
     /**
      * Takes any amount of bytes and converts from Bytes to YotaBytes.
+     * @name formatBytes
+     * @function
+     *
      * @param {Number} bytes
+     *
      * @returns {String}
      */
     formatBytes(bytes) {
@@ -74,14 +95,20 @@ module.exports = {
         const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         const i = Math.floor(Math.log(bytes) / Math.log(1024));
         return `${parseFloat((bytes / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`;
-    },
+    }
 
     /**
-     * Takes any amount of milliseconds and translates to an approximate amount of minutes.
+     * Converts Miliseconds to Minutes
+     * @name notifyTime
+     * @function
+     *
      * @param {Number} ms
+     *
      * @returns {String}
      */
-    notifyTime: function (ms) {
+    notifyTime(ms) {
         return Math.ceil((ms / (1000 * 60)) % 60).toString();
     }
 }
+
+module.exports = Utilities;
