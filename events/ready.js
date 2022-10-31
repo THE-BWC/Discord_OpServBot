@@ -2,17 +2,17 @@ module.exports = {
 	name: 'ready',
 	once: true,
 	execute(client) {
-		client.logger.info(`Ready! Logged in as ${client.user.tag}`);
+		client.logger.info(`[DISCORD] - Logged in as ${client.user.tag}`);
 
 		client.xenProvider.init(client)
-			.catch(e => client.logger.error(e.stack))
+			.catch(err => client.logger.error(err.stack))
 		client.botProvider.init(client)
-			.catch(e => client.logger.error(e.stack))
-
+			.catch(err => client.logger.error(err.stack))
 		client.botApi.init(client)
+			.catch(err => client.logger.error(err.stack))
 
 		// Log that the bot is ready to post.
-		client.logger.info('[DISCORD] - Discord-bot: Bot is online');
+		client.logger.info('[DISCORD] - Bot is online');
 
 		// Start the cron jobs.
 		client.cron.at19_oClock(client).start();
