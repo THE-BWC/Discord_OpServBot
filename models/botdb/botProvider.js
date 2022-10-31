@@ -1,29 +1,24 @@
-const Sequelize = require('sequelize')
 const { bot } = require('../database')
+const { Sequelize, Op } = require("sequelize");
 const Guild = require('./guild')
-const Warn = require('./warn')
-const Duncecap = require('./duncecap')
 const Locked_channel = require('./locked_channel')
 const Omit_channel_lock = require('./omit_channel_lock')
 const Omit_channel_lock_role = require('./omit_channel_lock_role')
-const Assignable_roles = require('./assignable_roles')
-const Badwords = require('./badword')
+const DiscordEvents = require('./discord_events')
+const DiscordOpsecRoles = require('./discord_opsec_roles')
 const Operation = require('./operation')
-const GameChannel = require('./gamechannel')
+const GameChannel = require('./game_channel')
 
-// noinspection JSUnresolvedFunction
 class BotSettingsProvider {
     async init(client) {
         this.client = client
 
-        Guild.hasMany(Warn)
-        Guild.hasMany(Duncecap)
         Guild.hasMany(Locked_channel)
         Guild.hasMany(Omit_channel_lock)
         Guild.hasMany(Omit_channel_lock_role)
-        Guild.hasMany(Assignable_roles)
+        Guild.hasMany(DiscordEvents)
+        Guild.hasMany(DiscordOpsecRoles)
         Guild.hasMany(GameChannel)
-        Guild.hasOne(Badwords)
 
         //bot.sync({force: true}).catch(err => console.log(err))
         //bot.sync().catch(err => console.log(err))
@@ -51,22 +46,24 @@ class BotSettingsProvider {
         }
     }
 
+    ///////////////////// Guild /////////////////////
     // Fetches id, prefix, log, log-channel
     async fetchGuild(guildId, key) {
         if (!guildId && !key) {
-            return await Guild.findAll({ })
+            return await Guild.findAll({ raw: true })
                 .catch(err => this.client.logger.error(err.stack))
         }
         if (!key) {
-            return await Guild.findByPk(guildId)
+            return await Guild.findByPk(guildId, { raw: true })
                 .catch(err => this.client.logger.error(err.stack))
         } else {
-            return await Guild.findByPk(guildId)
+            return await Guild.findByPk(guildId, { raw: true })
                 .then(result => result.getDataValue(key))
                 .catch(err => this.client.logger.error(err.stack))
         }
     }
 
+    ///////////////////// Set Channels /////////////////////
     async setAnnouncementChannel(guildId, channelId) {
         await Guild.findByPk(guildId)
             .then(guild => guild.update({ announcement_channel: channelId }))
@@ -79,164 +76,198 @@ class BotSettingsProvider {
             .catch(err => this.client.logger.error(err.stack))
     }
 
-    // Fetches id, user_id, reason, guildId - Comes from the guild table
-    async fetchWarns(guildId, userId, warnId) {
-        if (guildId && !userId && !warnId) {
-            return await Warn.findAll({
-                where: {guildId: guildId}
-            }).catch(err => this.client.logger.error(err.stack))
-        } else if (guildId && userId && !warnId) {
-            return await Guild.findByPk(guildId)
-                .then(guild => {
-                    return guild.getWarns({where: { user_id: userId } })
-                }).catch(err => this.client.logger.error(err.stack))
-        } else {
-            return await Guild.findByPk(guildId)
-                .then(guild => {
-                    return guild.getWarns({where: { user_id: userId, id: warnId}})
-                }).catch(err => this.client.logger.error(err.stack))
-        }
-    };
-
-    async createWarning(guildId, userId, reason, modId) {
-        await Guild.findByPk(guildId)
-            .then(guild => {
-                return guild.createWarn({user_id: userId, reason: reason, mod_id: modId})
-            }).catch(err => this.client.logger.error(err.stack))
-    }
-
-    async removeWarning(guildId, warning) {
-        return await Guild.findByPk(guildId)
-            .then(guild => {
-                guild.removeWarn(warning)
-            })
-            .catch(err => this.client.logger.error(err.stack))
-    }
-
-    async removeWarnings(guildId, userId) {
-        return await Guild.findByPk(guildId)
-            .then(async guild => {
-                let warns = await guild.getWarns({where: {user_id: userId}});
-                for (let warn in warns) {
-                    guild.removeWarn(warns[warn].dataValues.id)
-                }
-            })
-            .catch(err => this.client.logger.error(err.stack))
-    }
-
-    // Fetches id, user_id, user_roles, time, reason, guildId - Comes from the guild table
-    // Possible optimization.
-    async fetchDunceCaps(guildId, userId) {
-        if (guildId && !userId) {
-            return await Duncecap.findAll({
-                where: {guildId: guildId}
-            }).catch(err => this.client.logger.error(err.stack))
-        } else {
-            return await Duncecap.findAll({
-                where: {guildId: guildId, user_id: userId}
-            }).catch(err => this.client.logger.error(err.stack))
-        }
-    };
-
-    async createDunce(guildId, userId, userRoles, time, reason) {
-        await Guild.findByPk(guildId)
-            .then(guild => {
-                return guild.createDuncecap({user_id: userId, user_roles: userRoles, time: time, reason: reason})
-            }).catch(err => this.client.logger.error(err.stack))
-    }
-
-    async removeDuncecap(guildId, dunce) {
-        await Guild.findByPk(guildId)
-            .then(guild => {
-                guild.removeDunce(dunce)
-            })
-            .catch(err => this.client.logger.error(err.stack))
-    }
-
-    // Fetches id, role_id, guildId - Comes from the guild table
-    async fetchAssignableRoles(guildId) {
-        return await Assignable_roles.findAll({
-            where: {guildId: guildId}
-        }).catch(err => this.client.logger.error(err.stack))
-    };
-
+    ///////////////////// Locked Channels /////////////////////
     // Fetches id, channel_id, reason, message_id, guildId - Comes from the guild table
     async fetchLockedChannels(guildId) {
         return await Locked_channel.findAll({
-            where: {guildId: guildId}
+            where: { guildId: guildId },
+            raw: true
         }).catch(err => this.client.logger.error(err.stack))
     };
 
     // Fetches id, channel_id, guildId - Comes from the guild table
     async fetchOmitLockedChannels(guildId) {
         return await Omit_channel_lock.findAll({
-            where: {guildId: guildId}
+            where: { guildId: guildId },
+            raw: true
         }).catch(err => this.client.logger.error(err.stack))
     };
 
     // Fetches id, role_id, guildId - Comes from the guild table
     async fetchOmitLockedChannelsRoles(guildId) {
         return await Omit_channel_lock_role.findAll({
-            where: {guildId: guildId}
+            where: { guildId: guildId },
+            raw: true
         }).catch(err => this.client.logger.error(err.stack))
     };
 
-    async fetchOps(where) {
-        if (!where) {
+
+    ///////////////////// Discord Events /////////////////////
+    /**
+     * Creates a Discord Event Entry in the Discord Event Table
+     *
+     * @param   {String | Number}   guildId     The ID of the Guild in which the Event was created
+     * @param   {String | Number}   eventId     The ID of the created Event
+     * @param   {String | Number}   operationId The ID of the Operation whose Event got created
+     * @param   {Number}            editedDate  The timestamp(Epoch) of the last edit to the operation
+     *
+     * @returns {Promise.<void>}
+     */
+    async createEventEntry(guildId, eventId, operationId, editedDate) {
+        await Guild.findByPk(guildId)
+            .then(guild => {
+                return guild.createDiscord_event({ event_id: eventId, operation_id: operationId, operation_edited_date: editedDate })
+            }).catch(err => this.client.logger.error(err.stack))
+    }
+
+    /**
+     * Fetches a Discord Event Entry in the Discord Event Table
+     *
+     * @param {String | Number}     operationId The Operation ID of the operation to fetch
+     *
+     * @returns {Promise.<Object>}
+     */
+    async fetchEventEntry(operationId) {
+        return await DiscordEvents.findByPk(operationId, { raw: true })
+            .catch(err => this.client.logger.error(err.stack))
+    }
+
+    /**
+     * Updates a Discord Event Entry in the Discord Event Table
+     *
+     * @param {String | Number}     operationId The ID of the Operation to update
+     * @param {Number}              editedDate  The new operation edit date
+     *
+     * @returns {Promise<void>}
+     */
+    async updateEventEntry(operationId, editedDate) {
+        await DiscordEvents.findByPk(operationId)
+            .then(event => {
+                event.update({ operation_edited_date: editedDate })
+            })
+    }
+
+    /**
+     * Deletes a Discord Event Entry in the Discord Event Table
+     *
+     * @param {String | Number}     operationId The ID of the Operation to Delete
+     *
+     * @returns {Promise<void>}
+     */
+    async deleteEventEntry(operationId) {
+        return await DiscordEvents.destroy({
+            where: { operation_id: operationId }
+        }).catch(err => this.client.logger.error(err.stack))
+    }
+
+    ///////////////////// Discord OPSEC Roles /////////////////////
+    /**
+     * Fetches an OPSEC role in the Discord OPSEC Role Table
+     *
+     * @param {String | Number}     gameId The Game ID of the game to fetch OPSEC role for
+     *
+     * @returns {Promise.<Object>}
+     */
+    async fetchOpsecRole(gameId) {
+        return await DiscordOpsecRoles.findByPk(gameId, { raw: true })
+            .catch(err => this.client.logger.error(err.stack))
+    }
+
+    ///////////////////// OPSEC Operations /////////////////////
+    /**
+     * Fetches OPSEC operations from the Bot Database
+     *
+     * @param {Number}     gameId Optional - The ID of the Game to fetch Ops for. Leave blank for all games.
+     *
+     * @returns {Promise.<Object>}
+     */
+    async fetchOps(gameId) {
+        if (!gameId) {
             return await Operation.findAll({
-                order: Sequelize.col('date_start')
+                order: Sequelize.col('date_start'),
+                raw: true
             }).catch(err => this.client.logger.error(err.stack))
         }
-        if (where) {
+        if (gameId) {
             return await Operation.findAll({
-                where: { game_id: { [Sequelize.Op.notIn]: (where) }},
-                order: Sequelize.col('date_start')
+                where: { game_id: { [Op.notIn]: (gameId) }},
+                order: Sequelize.col('date_start'),
+                raw: true
             }).catch(err => this.client.logger.error(err.stack))
         }
     }
 
-    async createOpEntry(ops) {
-        let currentDBOps = (await this.fetchOps()).map(r => r.dataValues)
-
-        let oldops = currentDBOps.filter(r => !ops.find(r2 => r.operation_id === r2.operation_id))
-        for (let oldop of oldops) {
-            await Operation.destroy({ where: { operation_id: oldop.operation_id }})
+    /**
+     * Creates op entries in the bot DB
+     *
+     * @param {object[]}     ops Array of Ops in Object format to create entries for.
+     *
+     * @returns {Promise.<Object>}
+     */
+    async createOpsEntry(ops) {
+        let currentDBOps = await this.fetchOps()
+        let oldOps = currentDBOps.filter(r => !ops.find(r2 => r.operation_id === r2.operation_id))
+        for (let oldOp of oldOps) {
+            await Operation.destroy({ where: { operation_id: oldOp.operation_id }})
         }
 
         for (let operation in ops) {
             ops[operation].notified = 0
         }
-
-        await Operation.bulkCreate(ops, { updateOnDuplicate: ["is_completed","operation_name","type_name","date_start","date_end","leader_username", "game_id", "tag", "game_name", "edited_date"] })
+        await Operation.bulkCreate(ops, { updateOnDuplicate: ["is_completed","type_id","type_name","date_start","date_end","leader_user_id", "game_id", "tag", "game_name", "edited_date"] })
             .catch(err => this.client.logger.error(err.stack))
     }
 
-    async updateOpEntry(op_id) {
+    /**
+     * Updates an op entry to set the Notified state to true
+     *
+     * @param {Number}     op_id ID of the Operation.
+     *
+     * @returns {Promise.<Object>}
+     */
+    async setOpNotified(op_id) {
         Operation.findByPk(op_id)
-            .then(result => result.update({ notified: 1 }))
+            .then(r => r.update({ notified: 1 }))
             .catch(err => this.client.logger.error(err.stack))
     }
 
+    /**
+     * Creates a game channel entry in the bot DB so we know the channel id of the channel to post in for the respective game.
+     *
+     * @param {Number}     guildId   ID of the guild.
+     * @param {Number}     gameId    ID of the game.
+     * @param {Number}     channelId ID of the channel.
+     *
+     * @returns {Promise.<Object>}
+     */
     async createGameChannelEntry(guildId, gameId, channelId) {
         await Guild.findByPk(guildId)
-            .then(guild => {
-                return guild.createGame_channel({id: gameId, channel_id: channelId}, { updateOnDuplicate: ["id", "channel_id"] })
-            }).catch(err => this.client.logger.error(err.stack))
+            .then(guild => { return guild.createGame_channel({ game_id: gameId, channel_id: channelId}, { updateOnDuplicate: ["game_id", "channel_id"]}) })
+            .catch(err => this.client.logger.error(err.stack))
     }
 
+    /**
+     * Fetches the game channel id(s) for the respective game or all games.
+     *
+     * @param {Number}     guildId ID of the guild.
+     * @param {Number}     id      Optional - ID of the game.
+     *
+     * @returns {Promise.<Object>}
+     */
     async fetchGameChannels(guildId, id) {
         if (!id) {
             return await GameChannel.findAll({
-                where: { guildId: guildId}
+                where: { guildId: guildId },
+                raw: true
             }).catch(err => this.client.logger.error(err.stack))
         }
-        if (guildId && id) {
+        if (id) {
             return await GameChannel.findAll({
-                where: { guildId: guildId, id: id}
+                where: { guildId: guildId, game_id: id },
+                raw: true
             }).catch(err => this.client.logger.error(err.stack))
         }
     }
-
 }
 
 module.exports = BotSettingsProvider;
