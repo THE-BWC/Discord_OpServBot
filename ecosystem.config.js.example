@@ -1,0 +1,25 @@
+module.exports = {
+    apps: [{
+        name: "Discord_Bot_Opserv_Integration",
+        script: "./bot.js",
+        env: {
+            NODE_ENV: "production",
+            NODE_EXTRA_CA_CERTS: "",
+
+            TOKEN: "",
+
+            DB_HOST1: "",
+            DB_PORT1: "",
+            DB_NAME1: "",
+            DB_USER1: "",
+            DB_PASS1: "",
+
+            DB_HOST2: "",
+            DB_PORT2: "",
+            DB_NAME2: "",
+            DB_USER2: "",
+            DB_PASS2: ""
+        },
+        restart_delay: 4000
+    }]
+}
