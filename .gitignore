@@ -1,7 +1,22 @@
+# Ignore Idea files
 /.idea
+
+# Ignore Modules
 /node_modules
+
+# Prevent Environment file
 .env
+
+# Ignore Bot Files
 package-lock.json
-OpservBot.log
-.pem
-/api/sslcert/
+DiscordIntegration.log
+ecosystem.config.js
+settings.json
+
+# Ignore API Files
+api/
+api/*.pem
+api/sslcert/
+api/sslcert/*
+api/sslcert-backup/
+api/sslcert-backup/*
