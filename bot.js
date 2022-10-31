@@ -1,15 +1,18 @@
 #!/usr/bin/env node
-const { Client, Intents, Collection } = require('discord.js')
-const Winston = require('winston')
-const BotSettingsProvider = require('./models/botdb/botProvider')
-const XenforoSettingsProvider = require('./models/xenforo/xenProvider')
-const MasterController = require('./controller/operations')
-const DiscordEventsController = require('./controller/discordEvents')
-const DiscordRolesController = require('./controller/discordRoles')
-const API = require('./api/app')
-const CronJobs = require('./cron/cronjobs')
-const settings = require('./settings.json')
-const fs = require('fs')
+const { Client, Intents, Collection }   = require('discord.js')
+const Winston                           = require('winston')
+const BotSettingsProvider               = require('./models/botdb/botProvider')
+const XenforoSettingsProvider           = require('./models/xenforo/xenProvider')
+const DiscordEventsController           = require('./controller/discordEvents')
+const DiscordRolesController            = require('./controller/discordRoles')
+const DiscordChannelsController         = require('./controller/discordChannels')
+const DiscordNicknameController         = require('./controller/discordNickname')
+const DiscordOpsecOpPosting             = require('./controller/discordOpsecOpPosting')
+const API                               = require('./api/app')
+const Utilities                         = require('./functions/Utilities')
+const CronJob                           = require('./cron/cronjobs')
+const settings                          = require('./settings.json')
+const fs                                = require('fs')
 
 if (settings.NODE_ENV !== 'production') {
     require('dotenv').config()
@@ -138,44 +141,16 @@ for (const folder of eventFolders) {
  */
 client.config = settings
 
-/**
- * Holds the utility functions
- */
-client.functions = require('./functions/index')
-
-client.on('messageDelete', async message => {
-    // Ignore direct messages
-    if (!message.guild) return;
-    const fetchedLogs = await message.guild.fetchAuditLogs({
-        limit: 1,
-        type: 'MESSAGE_DELETE',
-    });
-    // Since there's only 1 audit log entry in this collection, grab the first one
-    const deletionLog = fetchedLogs.entries.first();
-
-    // Perform a coherence check to make sure that there's *something*
-    if (!deletionLog) return console.log(`A message by ${message.author.tag} was deleted, but no relevant audit logs were found.`);
-
-    // Now grab the user object of the person who deleted the message
-    // Also grab the target of this action to double-check things
-    const { executor, target } = deletionLog;
-
-    // Update the output with a bit more information
-    // Also run a check to make sure that the log returned was for the same author's message
-    if (target.id === message.author.id) {
-        console.log(`A message by ${message.author.tag} was deleted by ${executor.tag}.`);
-    } else {
-        console.log(`A message by ${message.author.tag} was deleted, but we don't know by who.`);
-    }
-});
-
 client.login(process.env.TOKEN)
     .catch(err => client.logger.error(err.stack))
 
-client.xenProvider = new XenforoSettingsProvider()
-client.botProvider = new BotSettingsProvider()
-client.masterController = new MasterController()
-client.discordEventController = new DiscordEventsController()
-client.botApi = new API()
-client.discordRolesController = new DiscordRolesController()
-client.cron = new CronJobs()
+client.utilities                    = new Utilities()                       // Holds all Utility Functions
+client.xenProvider                  = new XenforoSettingsProvider()         // Xenforo DB Provider
+client.botProvider                  = new BotSettingsProvider()             // Bot DB Provider
+client.discordEventsController      = new DiscordEventsController()         // Discord Events Controller for all Event interactions
+client.botApi                       = new API()                             // Bot API
+client.discordRolesController       = new DiscordRolesController()          // Discord Role Controller for Permissions integration
+client.discordChannelsController    = new DiscordChannelsController()       // Discord Channel Controller for Channel interactions
+client.discordNicknameController    = new DiscordNicknameController()       // Discord Nickname Controller for Nickname Interactions
+client.discordOpsecOpPosting        = new DiscordOpsecOpPosting()           // Discord Opsec Operation Controller for Operation List Posts
+client.cron                         = new CronJob()
