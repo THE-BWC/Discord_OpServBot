@@ -98,13 +98,13 @@ class XenforoSettingProvider {
                 INNER JOIN opserv_operation_type ON opserv_operations.type_id = opserv_operation_type.type_id
                 INNER JOIN xf_user ON opserv_operations.leader_user_id = xf_user.user_id
                 INNER JOIN opserv_games ON opserv_operations.game_id = opserv_games.game_id
-                WHERE opserv_operations.date_start >= 1659135844 AND opserv_operations.is_completed = 0
+                WHERE opserv_operations.date_start >= ${Date.now() / 1000} AND opserv_operations.is_completed = 0
                 ORDER BY opserv_operations.date_start`, { type: Sequelize.QueryTypes.SELECT})
         }
     }
 
     async fetchOperationById(operationId, opsec = false) {
-        return await xenforo.query(`SELECT * FROM opserv_operations WHERE operation_id = ${operationId} AND is_opsec = ${opsec ? "1" : "0"}`, { type: Sequelize.QueryTypes.SELECT })
+        return await xenforo.query(`SELECT * FROM opserv_operations WHERE operation_id = ${operationId} AND is_opsec = ${opsec ? 1 : 0}`, { type: Sequelize.QueryTypes.SELECT })
             .catch(err => this.client.logger.error(err.stack))
     }
 

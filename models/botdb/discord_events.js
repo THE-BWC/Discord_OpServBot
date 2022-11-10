@@ -12,7 +12,7 @@ const DiscordEvents = bot.define('discord_events', {
         primaryKey: true
     },
     operation_edited_date: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
         allowNull: false
     }
 });

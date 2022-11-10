@@ -12,6 +12,6 @@ router.post('/remove', roleController.remove)
 
 // bot/api/v?/role => GET
 router.get('/fetchallroles', roleController.fetchAllRoles)
-router.get('/forcesyncusers', roleController.forceSyncAllUsers)
+//router.get('/forcesyncusers', roleController.forceSyncAllUsers)
 
 module.exports = router

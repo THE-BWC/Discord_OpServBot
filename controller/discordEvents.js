@@ -1,4 +1,3 @@
-// noinspection DuplicatedCode
 const htmlToText = require('html-to-text')
 
 class DiscordEventsController {
@@ -32,6 +31,10 @@ class DiscordEventsController {
     async createEvent(client, operationId) {
         client.logger.info(`[FUNCTION] - CreateEvent function used`);
         const operation = await client.xenProvider.fetchOperationById(operationId, true)
+        if (operation.length === 0) {
+            client.logger.info(`[RETURNED] - OperationData length is 0. Returned`)
+            return
+        }
         await DiscordEventsController.#createDiscordEvent(client, operation[0])
             .catch(err => client.logger.error(err.stack))
     }
@@ -95,6 +98,10 @@ class DiscordEventsController {
                 }
             } else {
                 const operationDataArray = await client.xenProvider.fetchOperationById(op.operation_id)
+                if (operationDataArray.length === 0) {
+                    client.logger.info(`[RETURNED] - OperationData length is 0. Returned`)
+                    return
+                }
                 await DiscordEventsController.#createDiscordEvent(client, operationDataArray[0])
             }
         }
@@ -189,6 +196,10 @@ class DiscordEventsController {
     static async #createDiscordEvent(client, operation) {
         client.logger.info(`[FUNCTION] - [PRIVATE] CreateDiscordEvent function used`);
 
+        if (!operation) {
+            client.logger.info(`[RETURNED] Operation Object was undefined. Returned`)
+            return
+        }
         if (operation.date_start < Date.now()/1000) {
             client.logger.info(`[RETURNED] - Operation happened in the past. Returned`)
             return
@@ -196,17 +207,19 @@ class DiscordEventsController {
         let guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
             .catch(err => client.logger.error(err.stack))
 
-        // noinspection DuplicatedCode
         let html = await DiscordEventsController.#parseHTML(client, operation.description)
+        if (html.length > 1000) {
+            html = html.substring(0, 1000)
+        }
         let voiceChannel
-        if (operation.discord_voice_channel_id !== "") {
+        if (operation.discord_voice_channel_id !== "" && operation.discord_voice_channel_id !== null) {
             voiceChannel = await guild.channels.fetch(operation.discord_voice_channel_id)
         }
-        if (operation.discord_event_location === "") {
+        if (operation.discord_event_location === "" || operation.discord_event_location === null) {
             operation.discord_event_location = "Hmm..."
         }
 
-        let options = operation.discord_voice_channel_id !== "" ? {
+        let options = (operation.discord_voice_channel_id !== "" && operation.discord_voice_channel_id !== null) ? {
             name: operation.operation_name,
             description: html,
             scheduledStartTime: new Date(operation.date_start * 1000),
@@ -247,7 +260,6 @@ class DiscordEventsController {
         } catch (err) {
             client.logger.error(err.stack)
         }
-
     }
 }
 
