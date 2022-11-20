@@ -1,5 +1,4 @@
-const { Client, CommandInteraction } = require('discord.js')
-const { SlashCommandBuilder } = require("@discordjs/builders")
+const { Client, CommandInteraction, SlashCommandBuilder } = require('discord.js')
 const Table = require('cli-table')
 
 module.exports = {
