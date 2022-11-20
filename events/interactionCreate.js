@@ -1,5 +1,8 @@
 const { Collection } = require('discord.js')
-const cooldowns = new Map()
+const moment = require('moment')
+
+const commandCooldown = new Map()
+const buttonCooldown = new Map()
 
 module.exports = {
 	name: 'interactionCreate',
@@ -9,27 +12,6 @@ module.exports = {
             const command = client.commands.get(interaction.commandName)
 
             if (!command) return
-
-            // COOLDOWN HANDLER
-            if (!cooldowns.has(interaction.commandName)){
-                cooldowns.set(interaction.commandName, new Collection())
-            }
-
-            const currentTime = Date.now()
-            const timeStamps = cooldowns.get(interaction.commandName)
-            const cooldownAmount = (command.cooldown) * 1000
-
-            if (timeStamps.has(interaction.user.id)) {
-                const expirationTime = timeStamps.get(interaction.user.id) + cooldownAmount
-
-                if (currentTime < expirationTime) {
-                    const timeLeft = (expirationTime - currentTime) / 1000
-                    return interaction.reply(`Please wait ${timeLeft.toFixed(1)} seconds before using ${interaction.commandName}`)
-                }
-            }
-
-            timeStamps.set(interaction.user.id, currentTime)
-            setTimeout(() => timeStamps.delete(interaction.user.id), cooldownAmount)
 
             // PERMISSIONS CHECK
             if (command.permission) {
@@ -62,6 +44,20 @@ module.exports = {
 
             if (!button) return
 
+            // COOLDOWN HANDLER
+            const currentTime = Date.now()
+            const timeStamps = buttonCooldown.get(interaction.customId) || new Collection()
+            const cooldownAmount = (button.data.cooldown) * 1000
+            if (timeStamps.has(interaction.user.id)) {
+                const expirationTime = timeStamps.get(interaction.user.id) + cooldownAmount
+
+                if (currentTime < expirationTime) {
+                    const timeLeft = (expirationTime - currentTime)
+                    const time = moment.utc(timeLeft).format('HH:mm:ss')
+                    return interaction.reply({ content: `Please wait ${time} before using ${button.data.name}`, ephemeral: true })
+                }
+            }
+
             try {
                 await button.execute(client, interaction)
             } catch (err) {
@@ -79,6 +75,19 @@ module.exports = {
             const modal = client.modals.get(interaction.customId)
 
             if (!modal) return
+
+            // COOLDOWN HANDLER
+            const button = client.buttons.get(interaction.customId)
+            if (!buttonCooldown.has(interaction.customId)){
+                buttonCooldown.set(interaction.customId, new Collection())
+            }
+
+            const currentTime = Date.now()
+            const timeStamps = buttonCooldown.get(interaction.customId)
+            const cooldownAmount = (button.data.cooldown) * 1000
+
+            timeStamps.set(interaction.user.id, currentTime)
+            setTimeout(() => timeStamps.delete(interaction.user.id), cooldownAmount)
 
             try {
                 await modal.execute(client, interaction)

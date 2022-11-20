@@ -2,13 +2,15 @@ const { ModalBuilder, ActionRowBuilder, TextInputBuilder } = require("discord.js
 const { TextInputStyle } = require("discord-api-types/v10");
 module.exports = {
     data: {
-        custom_id: 'rr-combat'
+        custom_id: 'rr-combat',
+        name: 'Combat',
+        cooldown: 10800
     },
 
     execute: async function (client, interaction) {
         if (interaction.customId === 'rr-combat') {
             const modal = new ModalBuilder()
-                .setCustomId('rr-modal-combat')
+                .setCustomId('rr-combat')
                 .setTitle('Rapid Response Request')
 
             const location = new TextInputBuilder()
