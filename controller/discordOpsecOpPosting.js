@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 class DiscordOpsecOpPosting {
     async getOps(client) {
@@ -95,18 +95,19 @@ class DiscordOpsecOpPosting {
      */
     static async #createOpEmbed(client, ops, targetChannel) {
         client.logger.info(`[FUNCTION] - [PRIVATE] CreateOpEmbed function used`);
-        let embed = new MessageEmbed()
+        let embed = new EmbedBuilder()
             .setTitle("New Operations Posted!")
             .setColor(client.config.embedColor)
 
         for (let op in ops) {
-            embed.addField(`[${ops[op].tag}] ${ops[op].game_name}`,
-                `**Op Name:** ${ops[op].operation_name}
+            embed.addFields({
+                name: `[${ops[op].tag}] ${ops[op].game_name}`,
+                value: `**Op Name:** ${ops[op].operation_name}
                 **Op Type:** ${ops[op].type_name}
                 **Op Leader:** ${ops[op].leader_username}
                 **Start Time:** ${client.utilities.unixFormat(ops[op].date_start)}
-                Go to [Opserv](https://the-bwc.com/opserv/operation.php?id=${ops[op].operation_id}&do=view) for more info!`)
-
+                Go to [Opserv](https://the-bwc.com/opserv/operation.php?id=${ops[op].operation_id}&do=view) for more info!`
+            })
         }
 
         await targetChannel.send({embeds: [embed]})
@@ -125,16 +126,18 @@ class DiscordOpsecOpPosting {
         client.logger.info(`[FUNCTION] - [PRIVATE] createChunkedOpEmbed function used`);
         let chunkedArray = client.utilities.chunkArray(ops, size)
         for (let i = 0; i < chunkedArray.length; i++) {
-            let embed = new MessageEmbed()
+            let embed = new EmbedBuilder()
                 .setTitle("New Operations Posted!")
                 .setColor(client.config.embedColor)
             for (let j = 0; j < chunkedArray[i].length; j++) {
-                embed.addField(`[${chunkedArray[i][j].tag}] ${chunkedArray[i][j].game_name}`,
-                    `**Op Name:** ${chunkedArray[i][j].operation_name}
+                embed.addFields({
+                    name: `[${chunkedArray[i][j].tag}] ${chunkedArray[i][j].game_name}`,
+                    value: `**Op Name:** ${chunkedArray[i][j].operation_name}
                     **Op Type:** ${chunkedArray[i][j].type_name}
                     **Op Leader:** ${chunkedArray[i][j].leader_username}
                     **Start Time:** ${client.utilities.unixFormat(chunkedArray[i][j].date_start)}
-                    Go to [Opserv](https://the-bwc.com/opserv/operation.php?id=${chunkedArray[i][j].operation_id}&do=view) for more info!`)
+                    Go to [Opserv](https://the-bwc.com/opserv/operation.php?id=${chunkedArray[i][j].operation_id}&do=view) for more info!`
+                })
             }
             await targetChannel.send({embeds: [embed]})
         }
@@ -152,15 +155,17 @@ class DiscordOpsecOpPosting {
      */
     static async #createNotifyEmbed(client, allOps, currentOp, startDate, currentTime) {
         let timeDiff = startDate - currentTime
-        return new MessageEmbed()
+        return new EmbedBuilder()
             .setTitle(`Operation Starting in ${client.utilities.notifyTime(timeDiff * 1000)} Minutes!`)
             .setColor([200, 0, 0])
-            .addField(allOps[currentOp].game_name,
-                `**Op Name:** ${allOps[currentOp].operation_name}
+            .addFields({
+                name: `${allOps[currentOp].game_name}`,
+                value: `**Op Name:** ${allOps[currentOp].operation_name}
                     **Op Type:** ${allOps[currentOp].type_name}
                     **Op Leader:** ${allOps[currentOp].leader_username}
                     **Start Time:** ${client.utilities.unixFormat(allOps[currentOp].date_start)}
-                    Go to [Opserv](https://the-bwc.com/opserv/operation.php?id=${allOps[currentOp].operation_id}&do=view) for more info!`)
+                    Go to [Opserv](https://the-bwc.com/opserv/operation.php?id=${allOps[currentOp].operation_id}&do=view) for more info!`
+            })
     }
 }
 

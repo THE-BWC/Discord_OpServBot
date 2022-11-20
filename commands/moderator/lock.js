@@ -1,6 +1,6 @@
-const { Client, CommandInteraction, MessageEmbed } = require('discord.js');
+const { Client, CommandInteraction, SlashCommandBuilder, MessageEmbed} = require('discord.js');
 const { omitLockdownRoles, embedColor } = require('../../settings.json');
-const { SlashCommandBuilder } = require("@discordjs/builders");
+
 
 channelsLocked = [];
 message = [];
@@ -13,9 +13,11 @@ module.exports = {
         .addStringOption(option =>
             option.setName('options')
                 .setDescription('Options')
-                .addChoice('lock', 'lock')
-                .addChoice('unlock', 'unlock')
-                .addChoice('list', 'list')),
+                .addChoices(
+                    { name: 'Lock', value: 'lock' },
+                    { name: 'Unlock', value: 'unlock' },
+                    { name: 'List', value: 'list' },
+                )),
 
     /**
      * @param {Client} client
@@ -29,7 +31,7 @@ module.exports = {
 
                 const role = interaction.guild.roles.cache.map(role => role);
                 const channel = interaction.guild.channels.cache
-                    .filter(c => c.type === "GUILD_TEXT")
+                    .filter(c => c.type === 0)
                     .filter(c => c.id === interaction.channel.id)
                     .map(channel => channel)
 

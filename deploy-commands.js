@@ -1,6 +1,6 @@
-const { settings_clientId, botMainDiscordServer } = require('./settings.json')
-const { REST } = require('@discordjs/rest')
-const { Routes } = require('discord-api-types/v9')
+const { REST } = require('discord.js');
+const { settings_clientId, botMainDiscordServer, settings_guildId_dev } = require('./settings.json')
+const { Routes } = require('discord-api-types/v10')
 const fs = require('fs')
 require('dotenv').config()
 
@@ -22,10 +22,10 @@ for (const folder of commandFolders) {
 }
 
 const clientId = settings_clientId
-const guildId = botMainDiscordServer
+const guildId = settings_guildId_dev
 
 // noinspection JSClosureCompilerSyntax,JSCheckFunctionSignatures
-const rest = new REST({ version: 9}).setToken(process.env.TOKEN);
+const rest = new REST({ version: 10}).setToken(process.env.TOKEN);
 
 (async () => {
     try {

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { Client, Intents, Collection }   = require('discord.js')
+const { Client, GatewayIntentBits, Partials, Collection }   = require('discord.js')
 const Winston                           = require('winston')
 const BotSettingsProvider               = require('./models/botdb/botProvider')
 const XenforoSettingsProvider           = require('./models/xenforo/xenProvider')
@@ -37,16 +37,17 @@ if (!process.env.DB_NAME2 || !process.env.DB_USER2 || !process.env.DB_PASS2 || !
 
 const client = new Client({
     intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-        Intents.FLAGS.GUILD_PRESENCES
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildPresences,
     ],
     partials: [
-        "GUILD_MEMBER",
-        "MESSAGE",
-        "REACTION",
-        "USER"
+        Partials.GuildMember,
+        Partials.Message,
+        Partials.Reaction,
+        Partials.User
     ],
     presence: {
         activities: [{
@@ -89,6 +90,46 @@ for (const folder of commandFolders) {
             client.commands.set(command.data.name, command)
 
             client.logger.info(`Loaded command ${command.data.name} (${folder})`);
+        }
+    } catch (e) {
+        client.logger.error(`Failed to load folder ${folder}. **Please report the following error:**`)
+        client.logger.error(e.stack)
+    }
+}
+
+/**
+ * Creates collection of buttons
+ */
+client.buttons = new Collection();
+const buttonFolders = fs.readdirSync('./buttons')
+for (const folder of buttonFolders) {
+    try {
+        const loadedFolder = fs.readdirSync(`./buttons/${folder}`).filter(file => file.endsWith('.js'))
+        for (const file of loadedFolder) {
+            const button = require(`./buttons/${folder}/${file}`)
+            client.buttons.set(button.data.custom_id, button)
+
+            client.logger.info(`Loaded button ${button.data.custom_id} (${folder})`);
+        }
+    } catch (e) {
+        client.logger.error(`Failed to load folder ${folder}. **Please report the following error:**`)
+        client.logger.error(e.stack)
+    }
+}
+
+/**
+ * Creates collection of Modals
+ */
+client.modals = new Collection();
+const modalFolders = fs.readdirSync('./modals')
+for (const folder of modalFolders) {
+    try {
+        const loadedFolder = fs.readdirSync(`./modals/${folder}`).filter(file => file.endsWith('.js'))
+        for (const file of loadedFolder) {
+            const modal = require(`./modals/${folder}/${file}`)
+            client.modals.set(modal.data.custom_id, modal)
+
+            client.logger.info(`Loaded modal ${modal.data.custom_id} (${folder})`);
         }
     } catch (e) {
         client.logger.error(`Failed to load folder ${folder}. **Please report the following error:**`)

@@ -1,7 +1,5 @@
-const { Client, CommandInteraction, MessageEmbed, version: djVersion } = require('discord.js');
+const { Client, CommandInteraction, EmbedBuilder, SlashCommandBuilder, version: djVersion } = require('discord.js');
 const { version } = require('../../package.json')
-const moment = require('moment')
-const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,9 +15,9 @@ module.exports = {
         await interaction.deferReply()
             .then(async () => {
 
-                moment.locale(interaction.guild.id)
-                let embed = new MessageEmbed()
-                    .setColor(client.settings.embedColor)
+                const owner = await interaction.guild.members.fetch(interaction.guild.ownerId)
+                let embed = new EmbedBuilder()
+                    .setColor(client.config.embedColor)
                     .setAuthor({
                         name: client.user.username,
                         url: client.user.displayAvatarURL({
@@ -28,15 +26,15 @@ module.exports = {
                             size: 128
                         })
                     })
+                    .addFields(
+                        { name: `**❯ Bot:**`, value: `${client.user.tag}`, inline: true },
+                        { name: `**❯ Creation Date:**`, value: `<t:${parseInt(client.user.createdTimestamp / 1000, 10)}:F>`, inline: true },
+                        { name: `**❯ Creator**`, value: `${owner.user.tag}`, inline: true },
 
-                    .addField(`**❯ Bot:**`, `${client.user.tag}`, true)
-                    .addField(`**❯ Creation Date:**`, `${moment(client.user.createdTimestamp).format('Do MMMM YYYY HH:mm:ss')}`, true)
-                    .addField(`**❯ Creator**`, `${client.settings.Creator}`, true)
-
-                    .addField(`**❯ Node.js:**`, `${process.version}`, true)
-                    .addField(`**❯ Bot Version:**`, `v${version}`, true)
-                    .addField(`**❯ Discord.js:**`, `v${djVersion}`, true)
-
+                        { name: `**❯ Node.js:**`, value: `${process.version}`, inline: true },
+                        { name: `**❯ Bot Version:**`, value: `v${version}`, inline: true },
+                        { name: `**❯ Discord.js:**`, value: `v${djVersion}`, inline: true }
+                    )
                     .setFooter({ text: `Uptime: ${client.utilities.duration(client.uptime)}` });
 
                 await interaction.followUp({embeds: [embed]})

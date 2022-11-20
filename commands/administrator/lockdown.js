@@ -1,6 +1,4 @@
-const { Client, CommandInteraction, MessageEmbed } = require('discord.js');
-const { SlashCommandBuilder } = require("@discordjs/builders");
-const { omitLockdownChannels, omitLockdownRoles, embedColor } = require('../../settings.json');
+const { Client, CommandInteraction, EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 let lockdown = false;
 let message = [];
@@ -21,13 +19,13 @@ module.exports = {
 
                 const role = interaction.guild.roles.cache.map(role => role);
                 const textChannels = interaction.guild.channels.cache
-                    .filter(c => c.type === "GUILD_TEXT")
-                    .filter((channel) => !omitLockdownChannels.includes(channel.id))
+                    .filter(c => c.type === 0)
+                    .filter((channel) => !client.config.omitLockdownChannels.includes(channel.id))
                     .map(channel => channel)
 
                 if (lockdown === false) {
-                    const embed = new MessageEmbed()
-                        .setColor(embedColor)
+                    const embed = new EmbedBuilder()
+                        .setColor(client.config.embedColor)
                         .setTitle('Channel Locked')
                         .setDescription(`🔒 ⛔ **Server Lockdown** ⛔
             
@@ -37,8 +35,8 @@ module.exports = {
                         ***This channel will remain locked until the issue has been dealt with***`)
                     for (let channel in textChannels) {
                         await textChannels[channel].permissionOverwrites.create(role.find(r => r.name === '@everyone'), { SEND_MESSAGES: false })
-                        for (let i = 0; i < omitLockdownRoles.length; i++) {
-                            await textChannels[channel].permissionOverwrites.create(role.find(r => r.id === omitLockdownRoles[i]), { SEND_MESSAGES: true })
+                        for (let i = 0; i < client.config.omitLockdownRoles.length; i++) {
+                            await textChannels[channel].permissionOverwrites.create(role.find(r => r.id === client.config.omitLockdownRoles[i]), { SEND_MESSAGES: true })
                         }
                         await textChannels[channel].send({ embeds: [embed] }).then(m => message.push(m))
                     }
@@ -52,8 +50,8 @@ module.exports = {
                 if (lockdown === true) {
                     for (let channel in textChannels) {
                         await textChannels[channel].permissionOverwrites.create(role.find(r => r.name === '@everyone'), { SEND_MESSAGES: null })
-                        for (let i = 0; i < omitLockdownRoles.length; i++) {
-                            await textChannels[channel].permissionOverwrites.create(role.find(r => r.id === omitLockdownRoles[i]), { SEND_MESSAGES: null })
+                        for (let i = 0; i < client.config.omitLockdownRoles.length; i++) {
+                            await textChannels[channel].permissionOverwrites.create(role.find(r => r.id === client.config.omitLockdownRoles[i]), { SEND_MESSAGES: null })
                         }
                         textChannels[channel].send({ content: '**Lockdown Lifted**' }).then(m => m.delete({timeout: 6000}))
                     }

@@ -1,5 +1,4 @@
-const { Client, CommandInteraction, MessageEmbed } = require('discord.js');
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { Client, CommandInteraction, EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const os = require('os');
 const ms = require('ms');
 
@@ -19,19 +18,19 @@ module.exports = {
             .then(async () => {
 
                 const core = os.cpus()[0];
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setThumbnail(client.user.displayAvatarURL())
                     .setColor([200, 0, 0])
-                    .addField(`**❯ Platform:**`, process.platform, true)
-                    .addField(`**❯ Uptime:**`, ms(os.uptime() * 1000, {long: true}), true)
-                    .addField('\u200B', '\u200B', true)
-                    .addField(`**❯ CPU:**`,
-                        `Cores: ${os.cpus().length}`
-                        + `\nModel: ${core.model}`
-                        + `\nSpeed: ${core.speed}Mhz`)
-                    .addField(`**❯ Memory:**`,
-                        `Total: ${client.utilities.formatBytes(process.memoryUsage().heapTotal)}`
-                        + `\nUsed: ${client.utilities.formatBytes(process.memoryUsage().heapUsed)}`)
+                    .addFields(
+                        { name: `**❯ Platform:**`, value: process.platform, inline: true },
+                        { name: `**❯ Uptime:**`, value: ms(os.uptime() * 1000, {long: true}), inline: true },
+                        { name: '\u200B', value: '\u200B', inline: true },
+                        { name: `**❯ CPU:**`, value: `Cores: ${os.cpus().length}`
+                                + `\nModel: ${core.model}`
+                                + `\nSpeed: ${core.speed}Mhz`, inline: true },
+                        { name: `**❯ Memory:**`, value: `Total: ${client.utilities.formatBytes(process.memoryUsage().heapTotal)}`
+                                + `\nUsed: ${client.utilities.formatBytes(process.memoryUsage().heapUsed)}`, inline: true }
+                    )
                     .setTimestamp()
 
                 await interaction.followUp({embeds: [embed]})
