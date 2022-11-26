@@ -309,16 +309,14 @@ class BotSettingsProvider {
      * @returns {Promise.<Object>}
      */
     async createThreadEntry(guildId, threadId, channelId, createdAt, deleteAt) {
-        return await Guild.findByPk(guildId)
-            .then(guild => {
-                return guild.createDiscord_thread({
-                    thread_id: threadId,
-                    channel_id: channelId,
-                    created_at: createdAt,
-                    delete_at: deleteAt },
-                    { updateOnDuplicate: ["thread_id", "channel_id", "created_at", "delete_at"] }
-                )}
-            )
+            return DiscordThreads.create({
+                thread_id: threadId,
+                channel_id: channelId,
+                created_at: createdAt,
+                delete_at: deleteAt,
+                guildId: guildId },
+                { updateOnDuplicate: ["thread_id", "channel_id", "created_at", "delete_at", "guildId"]
+                })
             .catch(err => this.client.logger.error(err.stack))
     }
 

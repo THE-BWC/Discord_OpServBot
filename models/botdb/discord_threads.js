@@ -22,6 +22,10 @@ const DiscordThreads = bot.define('discord_threads', {
     delete_at: {
         type: sequelize.DATE,
         allowNull: false
+    },
+    guildId: {
+        type: sequelize.STRING,
+        allowNull: false
     }
 });
 

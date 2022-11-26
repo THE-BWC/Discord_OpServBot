@@ -27,8 +27,7 @@ class DiscordThreadsController {
         for (const thread of client.threads.values()) {
             if (thread.delete_at && thread.delete_at.getTime() < Date.now()) {
                 await DiscordThreadsController.#archiveThread(client, thread)
-                await client.botProvider.deleteThreadEntry(thread.thread_id)
-                client.threads.delete(thread.thread_id)
+                await this.threadClosed(client, thread)
             }
         }
     }
@@ -39,7 +38,8 @@ class DiscordThreadsController {
         if (thread.parent) {
             const parent = await client.channels.fetch(thread.parent.id)
             if (parent) {
-                const message = await parent.messages.cache.find(m => m.id === thread.id)
+                const messages = await parent.messages.fetch({ limit: 100 })
+                const message = await messages.find(m => m.id === thread.id)
                 if (message) {
                     await message.delete()
                 }
