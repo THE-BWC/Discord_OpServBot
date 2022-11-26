@@ -5,6 +5,7 @@ const Locked_channel = require('./locked_channel')
 const Omit_channel_lock = require('./omit_channel_lock')
 const Omit_channel_lock_role = require('./omit_channel_lock_role')
 const DiscordEvents = require('./discord_events')
+const DiscordThreads = require('./discord_threads')
 const DiscordOpsecRoles = require('./discord_opsec_roles')
 const Operation = require('./operation')
 const GameChannel = require('./game_channel')
@@ -17,6 +18,7 @@ class BotSettingsProvider {
         Guild.hasMany(Omit_channel_lock)
         Guild.hasMany(Omit_channel_lock_role)
         Guild.hasMany(DiscordEvents)
+        Guild.hasMany(DiscordThreads)
         Guild.hasMany(DiscordOpsecRoles)
         Guild.hasMany(GameChannel)
 
@@ -273,6 +275,83 @@ class BotSettingsProvider {
             }).catch(err => this.client.logger.error(err.stack))
         }
     }
+
+    ///////////////////// Discord Threads /////////////////////
+    /**
+     * Fetches all Discord Thread Entries in the Discord Thread Table
+     *
+     * @returns {Promise.<Object>}
+     */
+    async fetchAllThreadEntries() {
+        return await DiscordThreads.findAll({raw: true})
+            .catch(err => this.client.logger.error(err.stack))
+    }
+
+    /**
+     * Fetch all Discord Thread Entries in the Discord Thread Table for a specific Guild
+     */
+    async fetchGuildThreadEntries(guildId) {
+        return await DiscordThreads.findAll({
+            where: { guildId: guildId },
+            raw: true
+        }).catch(err => this.client.logger.error(err.stack))
+    }
+
+    /**
+     * Creates a Discord Thread Entry in the Discord Thread Table
+     *
+     * @param {String}  guildId The Guild ID of the thread to create
+     * @param {String}  threadId The Thread ID of the thread to create
+     * @param {String}  channelId The Channel ID of the thread to create
+     * @param {Date}    createdAt The Created At Date of the thread to create
+     * @param {Date}    deleteAt The Delete At Date the thread to create
+     *
+     * @returns {Promise.<Object>}
+     */
+    async createThreadEntry(guildId, threadId, channelId, createdAt, deleteAt) {
+        return await Guild.findByPk(guildId)
+            .then(guild => {
+                return guild.createDiscord_thread({
+                    thread_id: threadId,
+                    channel_id: channelId,
+                    created_at: createdAt,
+                    delete_at: deleteAt },
+                    { updateOnDuplicate: ["thread_id", "channel_id", "created_at", "delete_at"] }
+                )}
+            )
+            .catch(err => this.client.logger.error(err.stack))
+    }
+
+    /**
+     * Deletes a Discord Thread Entry in the Discord Thread Table
+     *
+     * @param {String}  threadId The Thread ID of the thread to delete
+     *
+     * @returns {Promise.<Object>}
+     */
+    async deleteThreadEntry(threadId) {
+        return await DiscordThreads.destroy({where: {thread_id: threadId}})
+            .catch(err => this.client.logger.error(err.stack))
+    }
+
+    /**
+     * Updates a Discord Thread Entry in the Discord Thread Table
+     *
+     * @param {String}  threadId The Thread ID of the thread to update
+     * @param {Date}    deleteAt The Delete At Date the thread to update
+     *
+     * @returns {Promise.<Object>}
+     */
+    async updateThreadEntry(threadId, deleteAt) {
+        return await DiscordThreads.findOne({where: {thread_id: threadId}})
+            .then(thread => {
+                return thread.update({
+                    delete_at: deleteAt
+                })
+            })
+            .catch(err => this.client.logger.error(err.stack))
+    }
+
 }
 
 module.exports = BotSettingsProvider;

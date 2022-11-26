@@ -15,7 +15,7 @@ module.exports = {
             const rapidResponseRole = interaction.guild.roles.cache.find(role => role.name === 'SC RR Combat');
 
             const embed = new EmbedBuilder()
-                .setTitle('Voice Channel')
+                .setTitle('Rapid Response Requested!')
                 .setDescription(`
                     **Member:** ${member}
                     **Location:** ${location}
@@ -41,6 +41,8 @@ module.exports = {
             });
 
             await thread.members.add(member);
+
+            await client.discordThreadsController.createThread(client, thread);
 
             await interaction.reply({
                 content: `Your Rapid Response has been created in ${thread}`,

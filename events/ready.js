@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'ready',
 	once: true,
-	execute(client) {
+	async execute(client) {
 		client.logger.info(`[DISCORD] - Logged in as ${client.user.tag}`);
 
 		client.xenProvider.init(client)
@@ -20,16 +20,22 @@ module.exports = {
 
 		// Start cron jobs for OPSEC Operation Posting.
 		client.cron.at19_oClock(client).start();
-		client.logger.info(`[CRONJOB] - Cron job at 19:00 started`);
+		client.logger.info(`[CRONJOB] - Send Ops list at 19:00 - Started`);
 
-		client.cron.every30min(client).start();
-		client.logger.info(`[CRONJOB] - Cron job every 30 minutes started`);
+		client.cron.getOps30min(client).start();
+		client.logger.info(`[CRONJOB] - Get Ops every 30 minutes - Started`);
 
 		client.cron.notify5min(client).start();
-		client.logger.info(`[CRONJOB] - Cron job every 5 minutes started`);
+		client.logger.info(`[CRONJOB] - Notify every 5 minutes - Started`);
+
+		client.cron.archive10min(client).start();
+		client.logger.info(`[CRONJOB] - Archive old threads every 10 minutes - Started`);
 
 		// Grabs OPSEC Operations from Xenforo DB
 		client.discordOpsecOpPosting.getOps(client)
+			.catch(err => client.logger.error(err.stack));
+
+		client.discordThreadsController.sync(client)
 			.catch(err => client.logger.error(err.stack));
 	},
 };

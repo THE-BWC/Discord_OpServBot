@@ -1,7 +1,6 @@
 const { Collection } = require('discord.js')
 const moment = require('moment')
 
-const commandCooldown = new Map()
 const buttonCooldown = new Map()
 
 module.exports = {

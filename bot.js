@@ -8,6 +8,7 @@ const DiscordRolesController            = require('./controller/discordRoles')
 const DiscordChannelsController         = require('./controller/discordChannels')
 const DiscordNicknameController         = require('./controller/discordNickname')
 const DiscordOpsecOpPosting             = require('./controller/discordOpsecOpPosting')
+const DiscordThreadsController          = require('./controller/discordThreads')
 const API                               = require('./api/app')
 const Utilities                         = require('./functions/Utilities')
 const CronJob                           = require('./cron/cronjobs')
@@ -177,6 +178,11 @@ for (const folder of eventFolders) {
 }
 
 /**
+ * Create collection of threads
+ */
+client.threads = new Collection();
+
+/**
  * Holds the settings
  * @type {Settings}
  */
@@ -194,4 +200,5 @@ client.discordRolesController       = new DiscordRolesController()          // D
 client.discordChannelsController    = new DiscordChannelsController()       // Discord Channel Controller for Channel interactions
 client.discordNicknameController    = new DiscordNicknameController()       // Discord Nickname Controller for Nickname Interactions
 client.discordOpsecOpPosting        = new DiscordOpsecOpPosting()           // Discord Opsec Operation Controller for Operation List Posts
+client.discordThreadsController     = new DiscordThreadsController()        // Discord Thread Controller for Thread Interactions
 client.cron                         = new CronJob()
