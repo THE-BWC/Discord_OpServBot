@@ -15,8 +15,8 @@ module.exports = {
 		client.logger.info('[DISCORD] - Bot is online');
 
 		// Syncs valid Operations with Discord
-		client.discordEventsController.sync(client)
-			.catch(err => client.logger.error(err.stack));
+		// client.discordEventsController.sync(client)
+		// 	.catch(err => client.logger.error(err.stack));
 
 		// Start cron jobs for OPSEC Operation Posting.
 		client.cron.at19_oClock(client).start();

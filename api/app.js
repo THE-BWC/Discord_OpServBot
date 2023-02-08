@@ -16,8 +16,8 @@ class API {
         }
 
         const options = {
-            cert: fs.readFileSync(`${client.config.SSLFolder}\\${client.config.SSLDomain}.crt`),
-            key: fs.readFileSync(`${client.config.SSLFolder}\\${client.config.SSLDomain}.key`)
+            cert: fs.readFileSync(`${client.config.SSLFolder}/${client.config.SSLDomain}.crt`),
+            key: fs.readFileSync(`${client.config.SSLFolder}/${client.config.SSLDomain}.key`)
         };
 
         app.use(express.json())
