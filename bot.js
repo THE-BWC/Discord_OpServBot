@@ -201,4 +201,4 @@ client.discordChannelsController    = new DiscordChannelsController()       // D
 client.discordNicknameController    = new DiscordNicknameController()       // Discord Nickname Controller for Nickname Interactions
 client.discordOpsecOpPosting        = new DiscordOpsecOpPosting()           // Discord Opsec Operation Controller for Operation List Posts
 client.discordThreadsController     = new DiscordThreadsController()        // Discord Thread Controller for Thread Interactions
-client.cron                         = new CronJob()
+client.cron                         = new CronJob()                         // CronJob class for all Cron Jobs

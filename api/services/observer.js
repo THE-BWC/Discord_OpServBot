@@ -6,6 +6,7 @@ class Observer extends EventEmitter {
     constructor() {
         super();
     }
+
     watchFolder(folder, client) {
         try {
             client.logger.info(`[API] - [SERVICE] - [WATCHER] - [CERTIFICATE] - Watching for folder changes on ${folder}`)
