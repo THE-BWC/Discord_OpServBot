@@ -104,7 +104,24 @@ class XenforoSettingProvider {
     }
 
     async fetchOperationById(operationId, opsec = false) {
-        return await xenforo.query(`SELECT * FROM opserv_operations WHERE operation_id = ${operationId} AND is_opsec = ${opsec ? 1 : 0}`, { type: Sequelize.QueryTypes.SELECT })
+        return await xenforo.query(
+                `SELECT
+                    opserv_operations.operation_id,
+                    opserv_operations.operation_name,
+                    opserv_operations.is_completed,
+                    opserv_operations.date_start,
+                    opserv_operations.date_end,
+                    opserv_operations.leader_user_id,
+                    opserv_operations.game_id,
+                    opserv_operations.description,
+                    opserv_operations.discord_voice_channel_id,
+                    opserv_operations.discord_event_location,
+                    opserv_games.tag,
+                    opserv_games.game_name,
+                    opserv_operations.edited_date
+                FROM opserv_operations
+                INNER JOIN opserv_games ON opserv_operations.game_id = opserv_games.game_id
+                WHERE operation_id = ${operationId} AND is_opsec = ${opsec ? 1 : 0}`, { type: Sequelize.QueryTypes.SELECT })
             .catch(err => this.client.logger.error(err.stack))
     }
 
