@@ -8,7 +8,7 @@ class DiscordEventsController {
      */
     async sync(client) {
         client.logger.info(`[FUNCTION] - Sync function used`);
-        const operations = await client.xenProvider.fetchOps(true)
+        const operations = await client.xenProvider.fetchOps()
 
         if (operations.length === 1) {
             await this.updateDiscordEvent(client, operations[0].operation_id)
@@ -48,7 +48,7 @@ class DiscordEventsController {
     async updateDiscordEvent(client, operationId) {
         client.logger.info(`[FUNCTION] - UpdateDiscordEvent function used`);
 
-        const guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        const guild = await client.guilds.fetch(client.config.botMainDiscordServer)
         let operationData = await client.xenProvider.fetchOperationById(operationId)
         if (operationData.length === 0) {
             client.logger.info(`[RETURNED] - OperationData length is 0. Returned`)
@@ -66,7 +66,10 @@ class DiscordEventsController {
         }
 
         if (event) {
-            if (operationData.edited_date === event.operation_edited_date) return
+            if (operationData.edited_date === event.operation_edited_date) {
+            	client.logger.info(`[RETURNED] - Operation edited date and event edited date is the same. Returned`)
+            	return
+            }
             const currentEvent = await guild.scheduledEvents.fetch(event.event_id)
             await DiscordEventsController.#updateEvent(client, guild, currentEvent, operationId, operationData)
         } else {
@@ -127,6 +130,7 @@ class DiscordEventsController {
             try {
                 await guild.scheduledEvents.delete(event)
                 await client.botProvider.deleteEventEntry(operationId)
+                return { message: "Event Deleted" }
             } catch (err) {
                 client.logger.error(err.stack)
             }
@@ -154,26 +158,33 @@ class DiscordEventsController {
 
             await client.botProvider.updateEventEntry(operationId, operationData.edited_date)
             let html = await DiscordEventsController.#parseHTML(client, operationData.description)
+            if (html.length > 950) {
+            	html = html.substring(0, 950)
+        	}
             let options
             if (operationData.discord_voice_channel_id !== "") {
                 const voiceChannel = await guild.channels.fetch(operationData.discord_voice_channel_id)
+                if (voiceChannel === null || voiceChannel === undefined) {
+          			client.logger.info(`[RETURNED] voiceChannel is null or undefined`)
+          			return
+        		}
                 options = {
-                    name: operationData.operation_name,
+                    name: `[${operationData.tag}] - ${operationData.operation_name}`,
                     description: html,
                     scheduledStartTime: new Date(operationData.date_start * 1000),
                     scheduledEndTime: new Date(operationData.date_end * 1000),
-                    entityType: "VOICE",
-                    privacyLevel: "GUILD_ONLY",
+                    entityType: 2,
+                    privacyLevel: 2,
                     channel: voiceChannel
                 }
             } else {
                 options = {
-                    name: operationData.operation_name,
+                    name: `[${operationData.tag}] - ${operationData.operation_name}`,
                     description: html,
                     scheduledStartTime: new Date(operationData.date_start * 1000),
                     scheduledEndTime: new Date(operationData.date_end * 1000),
-                    entityType: "EXTERNAL",
-                    privacyLevel: "GUILD_ONLY",
+                    entityType: 3,
+                    privacyLevel: 2,
                     channel: null,
                     entityMetadata: {
                         location: operationData.discord_event_location ? operationData.discord_event_location : "Hmm..."
@@ -208,8 +219,8 @@ class DiscordEventsController {
             .catch(err => client.logger.error(err.stack))
 
         let html = await DiscordEventsController.#parseHTML(client, operation.description)
-        if (html.length > 1000) {
-            html = html.substring(0, 1000)
+        if (html.length > 950) {
+            html = html.substring(0, 950)
         }
         let voiceChannel
         if (operation.discord_voice_channel_id !== "" && operation.discord_voice_channel_id !== null) {
@@ -224,16 +235,16 @@ class DiscordEventsController {
             description: html,
             scheduledStartTime: new Date(operation.date_start * 1000),
             scheduledEndTime: new Date(operation.date_end * 1000),
-            entityType: "VOICE",
-            privacyLevel: "GUILD_ONLY",
+            entityType: 2,
+            privacyLevel: 2,
             channel: voiceChannel
         } : {
             name: operation.operation_name,
             description: html,
             scheduledStartTime: new Date(operation.date_start * 1000),
             scheduledEndTime: new Date(operation.date_end * 1000),
-            entityType: "EXTERNAL",
-            privacyLevel: "GUILD_ONLY",
+            entityType: 3,
+            privacyLevel: 2,
             entityMetadata: {
                 location: operation.discord_event_location
             }
@@ -241,7 +252,7 @@ class DiscordEventsController {
 
         try {
             let event = await guild.scheduledEvents.create(options)
-            await client.botProvider.createEventEntry(client.config.settings_guildId_dev2, event.id, operation.operation_id, operation.edited_date)
+            await client.botProvider.createEventEntry(client.config.botMainDiscordServer, event.id, operation.operation_id, operation.edited_date)
         } catch (err) {
             client.logger.error(err.stack)
         }
