@@ -7,16 +7,8 @@
 # Prevent Environment file
 .env
 
-# Ignore Bot Files
-package-lock.json
-DiscordIntegration.log
-ecosystem.config.js
-settings.json
+# Ignore logs
+/logs
 
-# Ignore API Files
-api/
-api/*.pem
-api/sslcert/
-api/sslcert/*
-api/sslcert-backup/
-api/sslcert-backup/*
+# Ignore build files
+/dist
