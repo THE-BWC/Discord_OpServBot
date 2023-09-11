@@ -11,7 +11,7 @@ export const data =
                 .setRequired(true)
         )
 
-export const permission = [PermissionsBitField.Flags.Administrator];
+export const permission: bigint[] = [PermissionsBitField.Flags.Administrator];
 
 export async function execute(interaction: any) {
     interaction.client.emit(interaction.options.getString('event') as any, interaction);

@@ -12,13 +12,13 @@ async function eventHandler(client: BWC_Client) {
         const filePath = join(eventsPath, file);
         const event = await import(filePath);
 
-        if (event.data.once) {
+        if (event.data && event.data.once) {
             client.once(event.data.name, (...args) => event.execute(client, ...args));
-        } else {
+        } else if (event.data) {
             client.on(event.data.name, (...args) => event.execute(client, ...args));
+        } else {
+            client.logger.warn(`Event file found, but could not be loaded! '${file}'`, { label: 'DISCORD' });
         }
-
-        client.logger.info(`Loaded event ${event.data.name}`);
     }
 }
 

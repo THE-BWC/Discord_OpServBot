@@ -33,8 +33,8 @@ const sslFolder: string = process.env.SSL_FOLDER || '/home/patrickpedersen/sslce
 // Bot Database
 const botDBHost: string = process.env.BOT_DB_HOST || '127.0.0.1'
 const botDBPort: number = Number(process.env.BOT_DB_PORT || '3306')
-const botDBName: string = process.env.BOT_DB_NAME || 'vue_gallery'
-const botDBUsername: string = process.env.BOT_DB_USERNAME || 'gallery'
+const botDBName: string = process.env.BOT_DB_NAME || 'bwcsvr_opservIntegration'
+const botDBUsername: string = process.env.BOT_DB_USERNAME || 'bwcsvr_discord'
 const botDBPassword: string = process.env.BOT_DB_PASSWORD || 'Development'
 
 // Xen Database

@@ -23,9 +23,9 @@ async function commandHandler(client: BWC_Client | null, deploy: boolean = false
                 }
             } else {
                 if (deploy) {
-                    logger.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`);
+                    logger.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`, { label: 'DISCORD' });
                 } else {
-                    client?.logger.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`);
+                    client?.logger.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`, { label: 'DISCORD' });
                 }
             }
         }

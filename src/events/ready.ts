@@ -7,5 +7,10 @@ export const data = {
 };
 
 export async function execute(client: BWC_Client) {
-    client.logger.info(`Logged in as ${client.user?.tag}!`);
+    client.logger.info(`Logged in as ${client.user?.tag}!`, { label: 'DISCORD' });
+
+    client.botDatabaseProvider.init(client, true, false)
+        .catch((err: Error) => client.logger.error(err.stack, { label: 'DISCORD' }));
+
+    client.logger.info(`Bot is online!`, { label: 'DISCORD' });
 }

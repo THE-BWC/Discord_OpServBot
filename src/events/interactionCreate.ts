@@ -1,6 +1,6 @@
-import { Collection, Events } from 'discord.js';
+import { Collection, Events, GuildMember, Interaction } from 'discord.js';
 import { BWC_Client } from "../lib/index.js";
-import {ButtonModule, TimeStamps} from "../types/index.js";
+import { ButtonModule, CommandModule, TimeStamps } from "../types/index.js";
 import moment from 'moment';
 
 const buttonCooldown = new Collection();
@@ -9,17 +9,17 @@ export const data = {
     name: Events.InteractionCreate
 };
 
-export async function execute(client: BWC_Client, interaction: any) {
+export async function execute(client: BWC_Client, interaction: Interaction) {
     if (interaction.isChatInputCommand()) {
-
-        const command = client.commands.get(interaction.commandName);
+        const command: CommandModule | undefined = client.commands.get(interaction.commandName);
 
         if (!command) {
-            client.logger.warn(`No command matching '${interaction.commandName}' was found!`);
+            client.logger.warn(`No command matching '${interaction.commandName}' was found!`, { label: 'DISCORD' });
             return;
         }
 
-        if (command.permission && !interaction.member.permissions.has(command.permission)) {
+        const member = interaction.member as GuildMember;
+        if (command.permission && member && !member.permissions.has(command.permission)) {
             if (interaction.deferred) {
                 await interaction.followUp({ content: `You do not have permission to use this command!`, ephemeral: true })
                 return;
@@ -28,18 +28,17 @@ export async function execute(client: BWC_Client, interaction: any) {
             return;
         }
 
-
         try {
             await command.execute(interaction);
         } catch (error: any) {
             if (interaction.deferred) {
                 await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-                client.logger.error(error?.stack);
+                client.logger.error(error.stack, { label: 'DISCORD' });
                 return;
             }
 
             await interaction.reply({content: 'There was an error while executing this command!', ephemeral: true});
-            client.logger.error(error.stack);
+            client.logger.error(error.stack, { label: 'DISCORD' });
         }
     }
 
@@ -47,7 +46,7 @@ export async function execute(client: BWC_Client, interaction: any) {
         const button = client.buttons.get(interaction.customId);
 
         if (!button) {
-            client.logger.warn(`No button matching '${interaction.customId}' was found!`);
+            client.logger.warn(`No button matching '${interaction.customId}' was found!`, { label: 'DISCORD' });
             return;
         }
 
@@ -70,12 +69,12 @@ export async function execute(client: BWC_Client, interaction: any) {
         } catch (error: any) {
             if (interaction.deferred) {
                 await interaction.followUp({ content: 'There was an error while executing this button!', ephemeral: true });
-                client.logger.error(error?.stack);
+                client.logger.error(error.stack, { label: 'DISCORD' });
                 return;
             }
 
             await interaction.reply({content: 'There was an error while executing this button!', ephemeral: true});
-            client.logger.error(error.stack);
+            client.logger.error(error.stack, { label: 'DISCORD' });
         }
     }
 
@@ -83,7 +82,7 @@ export async function execute(client: BWC_Client, interaction: any) {
         const modal = client.modals.get(interaction.customId);
 
         if (!modal) {
-            client.logger.warn(`No modal matching '${interaction.customId}' was found!`);
+            client.logger.warn(`No modal matching '${interaction.customId}' was found!`, { label: 'DISCORD' });
             return;
         }
 
@@ -110,12 +109,15 @@ export async function execute(client: BWC_Client, interaction: any) {
         } catch (err: any) {
             if (interaction.deferred) {
                 await interaction.followUp({ content: 'There was an error while executing this modal!', ephemeral: true });
-                client.logger.error(err?.stack);
+                client.logger.error(err.stack, { label: 'DISCORD' });
                 return;
             }
 
             await interaction.reply({content: 'There was an error while executing this modal!', ephemeral: true});
-            client.logger.error(err?.stack);
+            client.logger.error(err.stack, { label: 'DISCORD' });
         }
     }
+
+    // if interaction doesn't match any of the above, return
+    return;
 }

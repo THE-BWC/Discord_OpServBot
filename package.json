@@ -9,9 +9,6 @@
     "Bot",
     "Moderation",
     "Discord.js",
-    "Database",
-    "Sequelize",
-    "Winston",
     "Black Widow Company",
     "BWC"
   ],
@@ -37,8 +34,9 @@
     "discord.js": "^14.13.0",
     "express": "^4.17.3",
     "express-basic-auth": "^1.2.1",
+    "mysql2": "^3.6.1",
+    "sequelize": "^6.33.0",
     "tslib": "^2.6.2",
-
     "winston": "^3.3.3"
   },
   "devDependencies": {
@@ -46,8 +44,8 @@
     "dotenv": "^14.2.0",
     "eslint": "^8.48.0",
     "nodemon": "^2.0.15",
-    "tsx": "^3.12.8",
     "ts-node": "^10.9.1",
+    "tsx": "^3.12.8",
     "typescript": "^5.2.2"
   }
 }

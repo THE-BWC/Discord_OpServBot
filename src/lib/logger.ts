@@ -23,17 +23,26 @@ const level = () => {
 
 winston.addColors(colors)
 
+const format = winston.format((info) => {
+    const { timestamp, message, level } = info;
+    info.message = `[${timestamp}] [${level.toUpperCase()}] - `;
+
+    if (info.label) {
+        info.message += `[${info.label}] - `;
+    }
+
+    info.message += `${message}`;
+
+    return info;
+})();
+
 const logger = winston.createLogger({
     level: level(),
     levels,
     format: winston.format.combine(
         winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
-        winston.format.printf(
-            (info) => {
-                const {timestamp} = info;
-                return `[${timestamp}] [${info.level.toUpperCase()}]: ${info.message}`;
-            }
-        )
+        format,
+        winston.format.printf((info) => info.message)
     ),
     transports: [
         new winston.transports.File({
