@@ -3,6 +3,7 @@ import {
     DataTypes,
     InferAttributes,
     InferCreationAttributes,
+    CreationOptional,
     ForeignKey,
     Association,
     HasOneGetAssociationMixin,
@@ -11,18 +12,21 @@ import {
 import {
     DiscordGuildModel
 } from "./index.js";
-import { botDatabase } from "../../lib/index.js";
+import { botDatabase } from "../../databaseConnection.js";
 const sequelize = botDatabase;
 
 class DiscordThreadModel extends Model<InferAttributes<DiscordThreadModel>, InferCreationAttributes<DiscordThreadModel>> {
-    declare id: number
+    // Auto-incrementing requires the declaration to be of CreationOptional<T>.
+    // This is because the value is not required to be provided by the user and would confuse TypeScript.
+    declare id: CreationOptional<number>
     declare thread_id: string
     declare channel_id: string
     declare guild_id: ForeignKey<string>
     declare created_date: number
+    declare delete_at: CreationOptional<number> | null
 
     declare static associations: {
-        guild: Association<DiscordThreadModel, DiscordThreadModel>;
+        guild: Association<DiscordThreadModel, DiscordGuildModel>;
     }
 
     declare getGuild: HasOneGetAssociationMixin<DiscordGuildModel>;
@@ -53,9 +57,14 @@ DiscordThreadModel.init({
         allowNull: false,
         defaultValue: 0,
     },
+    delete_at: {
+        type: DataTypes.BIGINT,
+        allowNull: true,
+        defaultValue: null,
+    }
 }, {
     sequelize,
-    tableName: 'discord_threads'
+    tableName: 'threads'
 })
 
 export default DiscordThreadModel;

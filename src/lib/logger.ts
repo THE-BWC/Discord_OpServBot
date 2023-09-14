@@ -33,6 +33,10 @@ const format = winston.format((info) => {
 
     info.message += `${message}`;
 
+    if (info.error) {
+        info.message += `\n${info.error}`;
+    }
+
     return info;
 })();
 

@@ -36,11 +36,13 @@ const client: BWC_Client = new BWC_Client({
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessageReactions,
         GatewayIntentBits.GuildPresences,
+        GatewayIntentBits.GuildMessages,
     ],
     partials: [
         Partials.GuildMember,
         Partials.Reaction,
-        Partials.User
+        Partials.User,
+        Partials.Message,
     ],
     presence: {
         activities: [{

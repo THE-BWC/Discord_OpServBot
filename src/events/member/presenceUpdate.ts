@@ -1,6 +1,6 @@
 import { Events, Presence } from 'discord.js';
-import { BWC_Client } from "../lib/index.js";
-import { discordServer } from "../envs.js";
+import { BWC_Client } from "../../lib/index.js";
+import { discordServer } from "../../envs.js";
 
 export const data = {
     name: Events.PresenceUpdate

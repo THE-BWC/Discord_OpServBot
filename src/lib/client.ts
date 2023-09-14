@@ -1,15 +1,24 @@
 import { Client, ClientOptions, Collection } from "discord.js";
-import { logger } from "./index.js";
-import { utilities } from "./index.js";
-import { CommandModule, ButtonModule, ModalModule, INTBotDatabaseProvider, INTUtilities } from "../types/index.js";
-import { commandHandler, eventHandler, buttonHandler, modalHandler } from "../handlers/index.js";
-import { BotDatabaseProvider } from "../models/bot/botProvider.js";
-
+import { Logger } from "winston";
+import { logger, utilities } from "./index.js";
+import {
+    INTBotDatabaseProvider,
+    INTCronJobs,
+    INTUtilities
+} from "../interfaces/main.interface.js";
+import { buttonHandler, commandHandler, eventHandler, modalHandler } from "../handlers/index.js";
+import { DiscordThreadController } from "../controller/index.js";
+import { BotDatabaseProvider } from "../database/providers/botProvider.js";
+import * as CronJobs from "../cron/cronjobs.js";
+import { ButtonModule, CommandModule, ModalModule } from "../interfaces/modules.interface.js";
+import { INTDiscordThreadController } from "../interfaces/controllers.interface.js";
 
 export default class BWC_Client extends Client {
-    public logger: any;
+    public logger: Logger;
     public utilities: INTUtilities;
+    public cronJobs: INTCronJobs;
     public botDatabaseProvider: INTBotDatabaseProvider;
+    public threadController: INTDiscordThreadController;
 
     public commands: Collection<String, CommandModule>
     public buttons: Collection<String, ButtonModule>
@@ -17,9 +26,12 @@ export default class BWC_Client extends Client {
 
     constructor(options: ClientOptions) {
         super(options);
+
         this.logger = logger;
         this.utilities = utilities;
+        this.cronJobs = CronJobs;
         this.botDatabaseProvider = new BotDatabaseProvider();
+        this.threadController = new DiscordThreadController(this);
 
         this.commands = new Collection<String, CommandModule>();
         this.buttons = new Collection<String, ButtonModule>();

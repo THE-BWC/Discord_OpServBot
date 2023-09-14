@@ -9,8 +9,15 @@ export const data = {
 export async function execute(client: BWC_Client) {
     client.logger.info(`Logged in as ${client.user?.tag}!`, { label: 'DISCORD' });
 
-    client.botDatabaseProvider.init(client, true, false)
-        .catch((err: Error) => client.logger.error(err.stack, { label: 'DISCORD' }));
+    const forceSync = false, alterSync = false;
+    client.botDatabaseProvider.init(client, forceSync, alterSync)
+        .catch((err: Error) => client.logger.error('Error initializing database:', { label: 'DATABASE', error: err.stack }));
+
+    client.cronJobs.archive10Min(client).start();
+    client.logger.info(`Archive old threads every 10 minutes - Started`, { label: 'CRON' });
+
+    client.threadController.syncThreads()
+        .catch((err: Error) => client.logger.error('Error syncing threads:', { label: 'CONTROLLER', error: err.stack }));
 
     client.logger.info(`Bot is online!`, { label: 'DISCORD' });
 }

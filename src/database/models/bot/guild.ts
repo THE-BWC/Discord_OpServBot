@@ -10,36 +10,37 @@ import {
     HasManyRemoveAssociationMixin,
 } from "sequelize";
 import {
-    DiscordThreadModel
+    DiscordThreadModel,
+    DiscordChannelModel
 } from "./index.js";
-import { botDatabase } from "../../lib/index.js";
+import { botDatabase } from "../../databaseConnection.js";
 const sequelize = botDatabase;
 
 class DiscordGuildModel extends Model<InferAttributes<DiscordGuildModel>, InferCreationAttributes<DiscordGuildModel>> {
-    declare id: number
     declare guild_id: string
     declare log_channel_id: CreationOptional<string> | null
     declare created_date: number
 
     declare static associations: {
         threads: Association<DiscordGuildModel, DiscordThreadModel>;
+        channels: Association<DiscordGuildModel, DiscordChannelModel>;
     }
 
     declare getThreads: HasManyGetAssociationsMixin<DiscordThreadModel>;
     declare addThread: HasManyAddAssociationMixin<DiscordThreadModel, number>;
     declare removeThread: HasManyRemoveAssociationMixin<DiscordThreadModel, number>;
+
+    declare getChannels: HasManyGetAssociationsMixin<DiscordChannelModel>;
+    declare addChannel: HasManyAddAssociationMixin<DiscordChannelModel, number>;
+    declare removeChannel: HasManyRemoveAssociationMixin<DiscordChannelModel, number>;
 }
 
 DiscordGuildModel.init({
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-    },
     guild_id: {
         type: DataTypes.STRING(50),
         allowNull: false,
         unique: true,
+        primaryKey: true,
     },
     log_channel_id: {
         type: DataTypes.STRING(50),
@@ -52,7 +53,7 @@ DiscordGuildModel.init({
     }
 }, {
     sequelize,
-    tableName: 'discord_guilds'
+    tableName: 'guilds'
 })
 
 export default DiscordGuildModel;

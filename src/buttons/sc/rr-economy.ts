@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 
 export const data = {
-    customId: 'sc-rr-econ',
+    customId: 'sc-rr-economy',
     name: 'Economy',
     cooldown: 10800
 }
@@ -16,7 +16,7 @@ export async function execute(interaction: any) {
     if (interaction.customId !== data.customId) return;
 
     const modal = new ModalBuilder()
-        .setCustomId('sc-rr-econ')
+        .setCustomId('sc-rr-economy')
         .setTitle('Rapid Response Request')
 
     const location = new TextInputBuilder()

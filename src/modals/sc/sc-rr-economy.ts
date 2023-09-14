@@ -2,7 +2,7 @@ import { ChannelType, ColorResolvable, EmbedBuilder, RoleData } from "discord.js
 import { embedColor } from "../../envs.js";
 
 export const data = {
-    customId: 'sc-rr-combat'
+    customId: 'sc-rr-economy'
 }
 
 export async function execute(interaction: any) {
@@ -13,7 +13,7 @@ export async function execute(interaction: any) {
     const voiceChannel = interaction.fields.getTextInputValue('sc-rr-input-voice-channel');
 
     const member = await interaction.client.users.fetch(interaction.member.user.id);
-    const rapidResponseRole = interaction.guild.roles.cache.find((role: RoleData) => role.name === 'SC RR Combat');
+    const rapidResponseRole = interaction.guild.roles.cache.find((role: RoleData) => role.name === 'SC RR Economy');
 
     const embed = new EmbedBuilder()
         .setTitle('Rapid Response Requested!')
