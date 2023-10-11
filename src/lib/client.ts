@@ -1,24 +1,39 @@
+// Basic imports
 import { Client, ClientOptions, Collection } from "discord.js";
 import { Logger } from "winston";
 import { logger, utilities } from "./index.js";
+import { buttonHandler, commandHandler, eventHandler, modalHandler } from "../handlers/index.js";
+import * as CronJobs from "../cron/cronjobs.js";
+
+// Database imports
+import { BotDatabaseProvider } from "../database/providers/botProvider.js";
+
+// Controller imports
+import { DiscordThreadController } from "../controller/index.js";
+
+// API imports
+import { API } from "../api/app.js";
+
+// Interface imports
 import {
     INTBotDatabaseProvider,
     INTCronJobs,
     INTUtilities
 } from "../interfaces/main.interface.js";
-import { buttonHandler, commandHandler, eventHandler, modalHandler } from "../handlers/index.js";
-import { DiscordThreadController } from "../controller/index.js";
-import { BotDatabaseProvider } from "../database/providers/botProvider.js";
-import * as CronJobs from "../cron/cronjobs.js";
 import { ButtonModule, CommandModule, ModalModule } from "../interfaces/modules.interface.js";
 import { INTDiscordThreadController } from "../interfaces/controllers.interface.js";
+
 
 export default class BWC_Client extends Client {
     public logger: Logger;
     public utilities: INTUtilities;
     public cronJobs: INTCronJobs;
+
     public botDatabaseProvider: INTBotDatabaseProvider;
+
     public threadController: INTDiscordThreadController;
+
+    public API: any;
 
     public commands: Collection<String, CommandModule>
     public buttons: Collection<String, ButtonModule>
@@ -30,8 +45,12 @@ export default class BWC_Client extends Client {
         this.logger = logger;
         this.utilities = utilities;
         this.cronJobs = CronJobs;
+
         this.botDatabaseProvider = new BotDatabaseProvider();
+
         this.threadController = new DiscordThreadController(this);
+
+        this.API = new API();
 
         this.commands = new Collection<String, CommandModule>();
         this.buttons = new Collection<String, ButtonModule>();

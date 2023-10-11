@@ -13,6 +13,9 @@ export async function execute(client: BWC_Client) {
     client.botDatabaseProvider.init(client, forceSync, alterSync)
         .catch((err: Error) => client.logger.error('Error initializing database:', { label: 'DATABASE', error: err.stack }));
 
+    client.API.init(client)
+        .catch((err: Error) => client.logger.error('Error initializing API:', { label: 'API', error: err.stack }));
+
     client.cronJobs.archive10Min(client).start();
     client.logger.info(`Archive old threads every 10 minutes - Started`, { label: 'CRON' });
 

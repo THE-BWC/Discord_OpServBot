@@ -9,7 +9,7 @@ import Observer from "./services/observer.js";
 
 import RouterV1 from "./routes/routerV1.js";
 
-class API {
+export class API {
     async init(client: BWC_Client, enableHttps = false) {
         let app = express();
         app.set('client', client);
@@ -23,7 +23,7 @@ class API {
                 https.globalAgent.options.ca = [
                     fs.readFileSync(process.env.NODE_EXTRA_CA_CERTS)
                 ]
-            };
+            }
 
             options = {
                 cert: fs.readFileSync(`${process.env.SSL_FOLDER}/${process.env.SSL_DOMAIN}.crt`),
@@ -95,5 +95,3 @@ class API {
         }
     }
 }
-
-export default new API();
