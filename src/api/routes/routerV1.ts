@@ -1,6 +1,6 @@
 import express from "express";
 
-import roleRouter from "./roleRouter.js";
+import roleRouter from "./role.router.js";
 
 const RouterV1 = express.Router();
 

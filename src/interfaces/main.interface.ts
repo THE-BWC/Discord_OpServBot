@@ -1,6 +1,6 @@
-import {BWC_Client} from "../lib/index.js";
-import {INTChannelService, INTGuildService, INTThreadService} from "./services.interface.js";
-import {DiscordChannelTypeEnum, DiscordModalTypeEnum} from "./enums.interface.js";
+import { BWC_Client } from "../lib/index.js";
+import { INTChannelService, INTGuildService, INTThreadService } from "./services.interface.js";
+import { DiscordChannelTypeEnum, DiscordModalTypeEnum } from "./enums.interface.js";
 
 
 export interface INTUtilities {
@@ -48,4 +48,8 @@ export interface INTRapidResponseButton {
     channel_id: string;
     guild_id: string;
     created_date: number;
+}
+
+export interface INTApi {
+    init(client: BWC_Client, enableHttps?: boolean): Promise<void>;
 }

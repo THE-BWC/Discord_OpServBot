@@ -5,7 +5,7 @@ import fs from "fs";
 import basicAuth, { IBasicAuthedRequest } from "express-basic-auth";
 import { Request, Response } from "express";
 import { BWC_Client } from "../lib/index.js";
-import Observer from "./services/observer.js";
+import Observer from "./lib/observer.js";
 
 import RouterV1 from "./routes/routerV1.js";
 

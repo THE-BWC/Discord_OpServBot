@@ -18,9 +18,14 @@ import { API } from "../api/app.js";
 import {
     INTBotDatabaseProvider,
     INTCronJobs,
-    INTUtilities
+    INTUtilities,
+    INTApi
 } from "../interfaces/main.interface.js";
-import { ButtonModule, CommandModule, ModalModule } from "../interfaces/modules.interface.js";
+import {
+    ButtonModule,
+    CommandModule,
+    ModalModule
+} from "../interfaces/modules.interface.js";
 import { INTDiscordThreadController } from "../interfaces/controllers.interface.js";
 
 
@@ -33,7 +38,7 @@ export default class BWC_Client extends Client {
 
     public threadController: INTDiscordThreadController;
 
-    public API: any;
+    public API: INTApi;
 
     public commands: Collection<String, CommandModule>
     public buttons: Collection<String, ButtonModule>
@@ -80,10 +85,12 @@ export default class BWC_Client extends Client {
     }
 
     public getStreamerRole() {
+        // TODO: Return the streamer role id from the database
         return "1147536903575453807";
     }
 
     public getBWCRole() {
+        // TODO: Return the BWC role id from the database
         return "799033636249927690";
     }
 }
