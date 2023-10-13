@@ -7,7 +7,7 @@ import { DiscordGuildModel } from "../models/bot/index.js";
  *
  * @returns {Promise<DiscordGuildModel>} The guild from the database
  */
-async function getGuild(guildId: string) {
+async function getGuild(guildId: string): Promise<DiscordGuildModel | null> {
     return await DiscordGuildModel.findOne({
         where: {
             guild_id: guildId
@@ -20,7 +20,7 @@ async function getGuild(guildId: string) {
  *
  * @returns {Promise<DiscordGuildModel[]>} All guilds from the database
  */
-async function getGuilds() {
+async function getGuilds(): Promise<DiscordGuildModel[]> {
     return await DiscordGuildModel.findAll();
 }
 
@@ -32,7 +32,7 @@ async function getGuilds() {
  *
  * @returns {Promise<DiscordGuildModel>} The guild that was added
  */
-async function addGuild(guildId: string, logChannelId: string | null = null) {
+async function addGuild(guildId: string, logChannelId: string | null = null): Promise<DiscordGuildModel> {
     return await DiscordGuildModel.create({
         guild_id: guildId,
         log_channel_id: logChannelId,
@@ -48,7 +48,7 @@ async function addGuild(guildId: string, logChannelId: string | null = null) {
  *
  * @returns {Promise<DiscordGuildModel>} The guild that was updated
  */
-async function updateGuild(guildId: string, logChannelId: string | null = null) {
+async function updateGuild(guildId: string, logChannelId: string | null = null): Promise<[affectedCount: number]> {
     return await DiscordGuildModel.update({
         log_channel_id: logChannelId
     }, {
@@ -65,7 +65,7 @@ async function updateGuild(guildId: string, logChannelId: string | null = null) 
  *
  * @returns {Promise<Number>} The number of rows deleted
  */
-async function deleteGuild(guildId: string) {
+async function deleteGuild(guildId: string): Promise<number> {
     return await DiscordGuildModel.destroy({
         where: {
             guild_id: guildId
@@ -78,7 +78,7 @@ async function deleteGuild(guildId: string) {
  *
  * @returns {Promise<Number>} The number of rows deleted
  */
-async function deleteAllGuilds() {
+async function deleteAllGuilds(): Promise<number> {
     return await DiscordGuildModel.destroy({
         where: {}
     });

@@ -11,7 +11,9 @@ export async function execute(client: BWC_Client) {
 
     const forceSync = false, alterSync = false;
     client.botDatabaseProvider.init(client, forceSync, alterSync)
-        .catch((err: Error) => client.logger.error('Error initializing database:', { label: 'DATABASE', error: err.stack }));
+        .catch((err: Error) => client.logger.error('Error initializing Bot database:', { label: 'DATABASE', error: err.stack }));
+    client.xenDatabaseProvider.init(client)
+        .catch((err: Error) => client.logger.error('Error initializing Xenforo database:', { label: 'DATABASE', error: err.stack }));
 
     client.API.init(client)
         .catch((err: Error) => client.logger.error('Error initializing API:', { label: 'API', error: err.stack }));

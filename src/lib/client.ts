@@ -7,9 +7,13 @@ import * as CronJobs from "../cron/cronjobs.js";
 
 // Database imports
 import { BotDatabaseProvider } from "../database/providers/botProvider.js";
+import { XenDatabaseProvider } from "../database/providers/xenProvider.js";
 
 // Controller imports
-import { DiscordThreadController } from "../controller/index.js";
+import {
+    DiscordThreadController,
+    OpsecOpPostingController
+} from "../controller/index.js";
 
 // API imports
 import { API } from "../api/app.js";
@@ -17,6 +21,7 @@ import { API } from "../api/app.js";
 // Interface imports
 import {
     INTBotDatabaseProvider,
+    INTXenDatabaseProvider,
     INTCronJobs,
     INTUtilities,
     INTApi
@@ -35,8 +40,10 @@ export default class BWC_Client extends Client {
     public cronJobs: INTCronJobs;
 
     public botDatabaseProvider: INTBotDatabaseProvider;
+    public xenDatabaseProvider: INTXenDatabaseProvider;
 
     public threadController: INTDiscordThreadController;
+    public opsecOpPostingController: any;
 
     public API: INTApi;
 
@@ -52,8 +59,10 @@ export default class BWC_Client extends Client {
         this.cronJobs = CronJobs;
 
         this.botDatabaseProvider = new BotDatabaseProvider();
+        this.xenDatabaseProvider = new XenDatabaseProvider();
 
         this.threadController = new DiscordThreadController(this);
+        this.opsecOpPostingController = new OpsecOpPostingController(this);
 
         this.API = new API();
 

@@ -8,7 +8,7 @@ import { DiscordChannelTypeEnum } from "../../interfaces/enums.interface.js";
  *
  * @returns {Promise<DiscordChannelModel>} The channel from the database
  */
-async function getChannel(channelId: string) {
+async function getChannel(channelId: string): Promise<DiscordChannelModel | null> {
     return await DiscordChannelModel.findOne({
         where: {
             channel_id: channelId
@@ -21,7 +21,7 @@ async function getChannel(channelId: string) {
  *
  * @returns {Promise<DiscordChannelModel[]>} All channels from the database
  */
-async function getChannels() {
+async function getChannels(): Promise<DiscordChannelModel[]> {
     return await DiscordChannelModel.findAll();
 }
 
@@ -33,7 +33,7 @@ async function getChannels() {
  *
  * @returns {Promise<DiscordChannelModel[]>} All channels from the database
  */
-async function getChannelsByTypeAndGuild(type: DiscordChannelTypeEnum, guildId: string) {
+async function getChannelsByTypeAndGuild(type: DiscordChannelTypeEnum, guildId: string): Promise<DiscordChannelModel[]> {
     return await DiscordChannelModel.findAll({
         where: {
             type: type,
@@ -51,7 +51,7 @@ async function getChannelsByTypeAndGuild(type: DiscordChannelTypeEnum, guildId: 
  *
  * @returns {Promise<DiscordChannelModel>} The channel that was added
  */
-async function addChannel(channelId: string, type: DiscordChannelTypeEnum, guildId: string) {
+async function addChannel(channelId: string, type: DiscordChannelTypeEnum, guildId: string): Promise<DiscordChannelModel> {
     return await DiscordChannelModel.create({
         channel_id: channelId,
         type: type,
@@ -70,7 +70,7 @@ async function addChannel(channelId: string, type: DiscordChannelTypeEnum, guild
  * @returns {Promise<DiscordChannelModel>} The channel that was updated
  */
 
-async function updateChannel(channelId: string, type: DiscordChannelTypeEnum, guildId: string) {
+async function updateChannel(channelId: string, type: DiscordChannelTypeEnum, guildId: string): Promise<[affectedCount: number]> {
     return await DiscordChannelModel.update({
         type: type,
         guild_id: guildId
@@ -88,7 +88,7 @@ async function updateChannel(channelId: string, type: DiscordChannelTypeEnum, gu
  *
  * @returns {Promise<void>}
  */
-async function deleteChannel(channelId: string) {
+async function deleteChannel(channelId: string): Promise<number> {
     return await DiscordChannelModel.destroy({
         where: {
             channel_id: channelId
@@ -101,7 +101,7 @@ async function deleteChannel(channelId: string) {
  *
  * @returns {Promise<void>}
  */
-async function deleteAllChannels() {
+async function deleteAllChannels(): Promise<number> {
     return await DiscordChannelModel.destroy({
         where: {}
     });

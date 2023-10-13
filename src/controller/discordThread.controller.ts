@@ -3,7 +3,7 @@ import { ThreadChannel } from "discord.js";
 import { INTThread } from "../interfaces/main.interface.js";
 import { DiscordChannelTypeEnum } from "../interfaces/enums.interface.js";
 
-export class DiscordThreadController {
+export default class DiscordThreadController {
     private client: BWC_Client;
     constructor(client: BWC_Client) {
         this.client = client;

@@ -7,10 +7,16 @@ import {
     DiscordChannelModel,
     DiscordRapidResponseButtonModel
 } from "../models/bot/index.js";
-import { guildService, threadService, channelService } from "../services/index.js";
+import {
+    guildService,
+    threadService,
+    channelService,
+    operationService,
+} from "../services/index.js";
 import {
     INTChannelService,
     INTGuildService,
+    INTOperationService,
     INTThreadService
 } from "../../interfaces/services.interface.js";
 
@@ -18,11 +24,13 @@ export class BotDatabaseProvider {
     public guildService: INTGuildService;
     public threadService: INTThreadService;
     public channelService: INTChannelService;
+    public operationService: INTOperationService;
 
     constructor() {
         this.guildService = guildService;
         this.threadService = threadService;
         this.channelService = channelService;
+        this.operationService = operationService;
     }
 
     async init(client: BWC_Client, forceSync: boolean = false, alterSync: boolean = false) {

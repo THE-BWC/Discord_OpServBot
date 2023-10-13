@@ -1,6 +1,16 @@
 import { BWC_Client } from "../lib/index.js";
-import { INTChannelService, INTGuildService, INTThreadService } from "./services.interface.js";
+import {
+    INTGuildService,
+    INTChannelService,
+    INTThreadService,
+    INTXenUserService,
+    INTOperationService,
+    INTXenDiscordService,
+    INTXenOperationService
+} from "./services.interface.js";
 import { DiscordChannelTypeEnum, DiscordModalTypeEnum } from "./enums.interface.js";
+import { OperationModel } from "../database/models/bot/index.js";
+import { XenOpservOperationModel } from "../database/models/xen/index.js";
 
 
 export interface INTUtilities {
@@ -9,6 +19,7 @@ export interface INTUtilities {
     unixFormat(unix: number): string;
     duration(ms: number): string;
     notifyTime(ms: number): string;
+    convertXenOpToOp(client: BWC_Client, xenOp: XenOpservOperationModel): Promise<OperationModel | null>;
 }
 
 export interface INTCronJobs {
@@ -20,6 +31,14 @@ export interface INTBotDatabaseProvider {
     guildService: INTGuildService;
     threadService: INTThreadService;
     channelService: INTChannelService;
+    operationService: INTOperationService;
+}
+
+export interface INTXenDatabaseProvider {
+    init(client: BWC_Client): Promise<void>;
+    xenUserService: INTXenUserService;
+    xenOperationService: INTXenOperationService;
+    xenDiscordService: INTXenDiscordService;
 }
 
 export interface INTThread {

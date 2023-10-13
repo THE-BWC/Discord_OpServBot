@@ -1,3 +1,7 @@
+import { OperationModel } from '../database/models/bot/index.js';
+import { XenOpservOperationModel } from '../database/models/xen/index.js';
+import { BWC_Client } from "../lib/index.js";
+
 /**
  * Takes a dynamic size and splits it into n size groupings.
  * @name chunkNumber
@@ -89,4 +93,38 @@ export function duration(ms: number) {
  */
 export function notifyTime(ms: number) {
     return Math.ceil((ms / (1000 * 60)) % 60).toString();
+}
+
+/**
+ * Converts XenOpservOperationModel to OperationModel
+ *
+ * @param {BWC_Client} client
+ * @param {XenOpservOperationModel} op
+ *
+ * @returns {OperationModel}
+ */
+export const convertXenOpToOp = async (client: BWC_Client, op: XenOpservOperationModel): Promise<OperationModel | null> => {
+    return await client.xenDatabaseProvider.xenUserService.getUserByUserId(String(op.leader_user_id)).then(
+        user => {
+            if (user) {
+                return OperationModel.build({
+                    operation_id: op.operation_id,
+                    operation_name: op.operation_name,
+                    is_completed: op.is_completed,
+                    type_name: op.type_name,
+                    date_start: op.date_start,
+                    date_end: op.date_end,
+                    leader_username: user.username,
+                    game_id: op.game_id,
+                    tag: op.tag,
+                    game_name: op.game_name,
+                    edited_date: op.edited_date,
+                    is_opsec: op.is_opsec,
+                    notified: false
+                })
+            } else {
+                return null;
+            }
+        }
+    )
 }

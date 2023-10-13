@@ -7,7 +7,7 @@ import { DiscordThreadModel } from "../models/bot/index.js";
  *
  * @returns {Promise<DiscordThreadModel>} The thread from the database
  */
-async function getThread(threadId: string) {
+async function getThread(threadId: string): Promise<DiscordThreadModel | null> {
     return await DiscordThreadModel.findOne({
         where: {
             thread_id: threadId
@@ -20,7 +20,7 @@ async function getThread(threadId: string) {
  *
  * @returns {Promise<DiscordThreadModel[]>} All threads from the database
  */
-async function getThreads() {
+async function getThreads(): Promise<DiscordThreadModel[]> {
     return await DiscordThreadModel.findAll();
 }
 
@@ -31,7 +31,7 @@ async function getThreads() {
  *
  * @returns {Promise<DiscordThreadModel[]>} All threads from the database
  */
-async function getThreadsByGuild(guildId: string) {
+async function getThreadsByGuild(guildId: string): Promise<DiscordThreadModel[]> {
     return await DiscordThreadModel.findAll({
         where: {
             guild_id: guildId
@@ -49,7 +49,7 @@ async function getThreadsByGuild(guildId: string) {
  *
  * @returns {Promise<DiscordThreadModel>} The thread that was added
  */
-async function addThread(threadId: string, guildId: string, channelId: string, deleteAt: number) {
+async function addThread(threadId: string, guildId: string, channelId: string, deleteAt: number): Promise<DiscordThreadModel> {
     return await DiscordThreadModel.create({
         thread_id: threadId,
         guild_id: guildId,
@@ -69,7 +69,7 @@ async function addThread(threadId: string, guildId: string, channelId: string, d
  *
  * @returns {Promise<DiscordThreadModel>} The thread that was updated
  */
-async function updateThread(threadId: string, guildId: string, channelId: string, deleteAt?: number) {
+async function updateThread(threadId: string, guildId: string, channelId: string, deleteAt?: number): Promise<[affectedCount: number]> {
     let values: any = {
         guild_id: guildId,
         channel_id: channelId
@@ -93,7 +93,7 @@ async function updateThread(threadId: string, guildId: string, channelId: string
  *
  * @returns {Promise<Number>} The number of rows deleted
  */
-async function deleteThread(threadId: string) {
+async function deleteThread(threadId: string): Promise<number> {
     return await DiscordThreadModel.destroy({
         where: {
             thread_id: threadId
@@ -106,7 +106,7 @@ async function deleteThread(threadId: string) {
  *
  * @returns {Promise<Number>} The number of rows deleted
  */
-async function deleteAllThreads() {
+async function deleteAllThreads(): Promise<number> {
     return await DiscordThreadModel.destroy({
         where: {}
     });
