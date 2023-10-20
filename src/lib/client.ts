@@ -1,8 +1,15 @@
 // Basic imports
-import { Client, ClientOptions, Collection } from "discord.js";
+import {
+    Client,
+    ClientOptions,
+    Collection } from "discord.js";
 import { Logger } from "winston";
 import { logger, utilities } from "./index.js";
-import { buttonHandler, commandHandler, eventHandler, modalHandler } from "../handlers/index.js";
+import {
+    buttonHandler,
+    commandHandler,
+    eventHandler,
+    modalHandler } from "../handlers/index.js";
 import * as CronJobs from "../cron/cronjobs.js";
 
 // Database imports
@@ -31,7 +38,10 @@ import {
     CommandModule,
     ModalModule
 } from "../interfaces/modules.interface.js";
-import { INTDiscordThreadController } from "../interfaces/controllers.interface.js";
+import {
+    INTDiscordOpsecOpPostingController,
+    INTDiscordThreadController
+} from "../interfaces/controllers.interface.js";
 
 
 export default class BWC_Client extends Client {
@@ -43,7 +53,7 @@ export default class BWC_Client extends Client {
     public xenDatabaseProvider: INTXenDatabaseProvider;
 
     public threadController: INTDiscordThreadController;
-    public opsecOpPostingController: any;
+    public opsecOpPostingController: INTDiscordOpsecOpPostingController;
 
     public API: INTApi;
 

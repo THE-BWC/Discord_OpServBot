@@ -22,6 +22,7 @@ const sequelize = botDatabase;
 class DiscordChannelModel extends Model<InferAttributes<DiscordChannelModel>, InferCreationAttributes<DiscordChannelModel>> {
     declare channel_id: string
     declare type: string
+    declare game_id: number | null
     declare guild_id: ForeignKey<string>
     declare created_date: number
 
@@ -48,6 +49,10 @@ DiscordChannelModel.init({
         type: DataTypes.ENUM(...Object.values(DiscordChannelTypeEnum)),
         allowNull: false,
         unique: true,
+    },
+    game_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     },
     guild_id: {
         type: DataTypes.STRING(50),

@@ -33,6 +33,7 @@ export interface INTChannelService {
     getChannel(channelId: string): Promise<DiscordChannelModel | null>;
     getChannels(): Promise<DiscordChannelModel[]>;
     getChannelsByTypeAndGuild(type: DiscordChannelTypeEnum, guildId: string): Promise<DiscordChannelModel[]>;
+    getChannelsByGameIdAndGuild(gameId: number, guildId: string): Promise<DiscordChannelModel[]>;
     addChannel(channelId: string, type: DiscordChannelTypeEnum, guildId: string): Promise<DiscordChannelModel>;
     updateChannel(channelId: string, type: DiscordChannelTypeEnum, guildId: string): Promise<[affectedCount: number]>;
     deleteChannel(channelId: string): Promise<any>;

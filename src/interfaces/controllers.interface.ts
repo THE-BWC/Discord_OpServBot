@@ -9,3 +9,9 @@ export interface INTDiscordThreadController {
     updateThreadDeleteAt(thread: ThreadChannel): Promise<void>;
     archiveExpiredThreads(): Promise<void>;
 }
+
+export interface INTDiscordOpsecOpPostingController {
+    getOps(): Promise<void>;
+    sendOpLists(): Promise<void>;
+    notifyOps(): Promise<void>;
+}

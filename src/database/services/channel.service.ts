@@ -4,7 +4,7 @@ import { DiscordChannelTypeEnum } from "../../interfaces/enums.interface.js";
 /**
  * Get a channel from the database
  *
- * @param   {String}    channelId   The channel ID to get
+ * @param   {String}                    channelId   The channel ID to get
  *
  * @returns {Promise<DiscordChannelModel>} The channel from the database
  */
@@ -43,18 +43,37 @@ async function getChannelsByTypeAndGuild(type: DiscordChannelTypeEnum, guildId: 
 }
 
 /**
+ * Get all channels from the database that has the game ID
+ *
+ * @param   {Number}                    gameId  The game ID to get channels for
+ * @param   {String}                    guildId The guild ID to get channels for
+ *
+ * @returns {Promise<DiscordChannelModel[]>} All channels from the database
+ */
+async function getChannelsByGameIdAndGuild(gameId: number, guildId: string): Promise<DiscordChannelModel[]> {
+    return await DiscordChannelModel.findAll({
+        where: {
+            game_id: gameId,
+            guild_id: guildId
+        }
+    });
+}
+
+/**
  * Add a channel to the database
  *
  * @param   {String}                    channelId   The channel ID to add
  * @param   {DiscordChannelTypeEnum}    type        The type of channel to add
  * @param   {String}                    guildId     The guild ID to add
+ * @param   {Number}                    gameId      The game ID to add
  *
  * @returns {Promise<DiscordChannelModel>} The channel that was added
  */
-async function addChannel(channelId: string, type: DiscordChannelTypeEnum, guildId: string): Promise<DiscordChannelModel> {
+async function addChannel(channelId: string, type: DiscordChannelTypeEnum, guildId: string, gameId?: number): Promise<DiscordChannelModel> {
     return await DiscordChannelModel.create({
         channel_id: channelId,
         type: type,
+        game_id: gameId,
         guild_id: guildId,
         created_date: Date.now()
     });
@@ -84,7 +103,7 @@ async function updateChannel(channelId: string, type: DiscordChannelTypeEnum, gu
 /**
  * Delete a channel from the database
  *
- * @param   {String}    channelId   The channel ID to remove
+ * @param   {String}                    channelId   The channel ID to delete
  *
  * @returns {Promise<void>}
  */
@@ -111,6 +130,7 @@ export {
     getChannel,
     getChannels,
     getChannelsByTypeAndGuild,
+    getChannelsByGameIdAndGuild,
     addChannel,
     updateChannel,
     deleteChannel,
