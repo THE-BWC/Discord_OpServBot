@@ -15,3 +15,7 @@ export interface INTDiscordOpsecOpPostingController {
     sendOpLists(): Promise<void>;
     notifyOps(): Promise<void>;
 }
+
+export interface INTDiscordNicknameController {
+    setNickname(forumUserId: string): Promise<{ message: string }>;
+}

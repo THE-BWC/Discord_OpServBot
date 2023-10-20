@@ -19,7 +19,8 @@ import { XenDatabaseProvider } from "../database/providers/xenProvider.js";
 // Controller imports
 import {
     DiscordThreadController,
-    OpsecOpPostingController
+    OpsecOpPostingController,
+    DiscordNicknameController
 } from "../controller/index.js";
 
 // API imports
@@ -39,6 +40,7 @@ import {
     ModalModule
 } from "../interfaces/modules.interface.js";
 import {
+    INTDiscordNicknameController,
     INTDiscordOpsecOpPostingController,
     INTDiscordThreadController
 } from "../interfaces/controllers.interface.js";
@@ -54,6 +56,7 @@ export default class BWC_Client extends Client {
 
     public threadController: INTDiscordThreadController;
     public opsecOpPostingController: INTDiscordOpsecOpPostingController;
+    public nicknameController: INTDiscordNicknameController;
 
     public API: INTApi;
 
@@ -73,6 +76,7 @@ export default class BWC_Client extends Client {
 
         this.threadController = new DiscordThreadController(this);
         this.opsecOpPostingController = new OpsecOpPostingController(this);
+        this.nicknameController = new DiscordNicknameController(this);
 
         this.API = new API();
 
