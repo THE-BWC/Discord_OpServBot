@@ -103,6 +103,11 @@ export default class BWC_Client extends Client {
         eventHandler(this).then(() => this.logger.info(`Loaded ${this.eventNames().length - 1} events!`, { label: 'DISCORD' }));
     }
 
+    public getMainGuild() {
+        // TODO: Return the main guild id from the database
+        return "565959084990267393";
+    }
+
     public getStreamerRole() {
         // TODO: Return the streamer role id from the database
         return "1147536903575453807";

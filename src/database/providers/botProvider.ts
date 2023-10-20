@@ -5,7 +5,8 @@ import {
     DiscordGuildModel,
     DiscordThreadModel,
     DiscordChannelModel,
-    DiscordRapidResponseButtonModel
+    DiscordRapidResponseButtonModel,
+    OperationModel
 } from "../models/bot/index.js";
 import {
     guildService,
@@ -64,6 +65,7 @@ export class BotDatabaseProvider {
             // This is required since the built-in sync({ force: true }) does not work
             // correctly with associations and ends up dropping the tables in the wrong order
             try {
+                await OperationModel.drop();
                 await DiscordRapidResponseButtonModel.drop();
                 await DiscordThreadModel.drop();
                 await DiscordChannelModel.drop();

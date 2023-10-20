@@ -42,7 +42,11 @@ export default class OpsecOpPostingController {
      * @returns {Promise<void>}
      */
     public async sendOpLists(): Promise<void> {
-        let ops = await this.client.botDatabaseProvider.operationService.getAllOperations();
+        let ops = await this.client.botDatabaseProvider.operationService.getAllOperations()
+            .catch(error => {
+                this.client.logger.error('Error getting ops', { label: 'CONTROLLER', error: error.stack });
+                return;
+            })
         if (ops === undefined || !ops.length || ops.length === 0) {
             this.client.logger.info('No ops to send', { label: 'CONTROLLER' })
             return;
