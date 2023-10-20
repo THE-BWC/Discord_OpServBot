@@ -19,3 +19,7 @@ export interface INTDiscordOpsecOpPostingController {
 export interface INTDiscordNicknameController {
     setNickname(forumUserId: string): Promise<{ message: string }>;
 }
+
+export interface INTDiscordChannelController {
+    getAllVoiceChannels(): Promise<{ id: string; name: string; }[]>;
+}
