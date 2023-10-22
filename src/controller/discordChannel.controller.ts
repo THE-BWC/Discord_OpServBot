@@ -13,7 +13,7 @@ export default class DiscordThreadController {
      * @returns {Promise<{ id: string; name: string; }[]>}       The list of voice channels
      */
     public async getAllVoiceChannels(): Promise<{ id: string; name: string; }[]> {
-        const guild = await this.client.guilds.fetch(this.client.getMainGuild());
+        const guild = await this.client.guilds.fetch(this.client.getMainGuildId());
         const channels = guild.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice);
 
         let formattedChannels: { id: string; name: string; }[] = [];

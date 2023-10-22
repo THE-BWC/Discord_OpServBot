@@ -47,3 +47,18 @@ export async function getUpcomingOpsecOperations(): Promise<XenOpservOperationMo
         ]
     });
 }
+
+/**
+ * Get an operation from the database by its operation ID.
+ *
+ * @param {number} opId The operation ID to get
+ *
+ * @returns {Promise<XenOpservOperationModel | null>} The operation from the database.
+ */
+export async function getOperationByOpId(opId: number): Promise<XenOpservOperationModel | null> {
+    return await XenOpservOperationModel.findOne({
+        where: {
+            operation_id: opId
+        }
+    });
+}

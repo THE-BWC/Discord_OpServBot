@@ -10,6 +10,7 @@ const sequelize = xenDatabase;
 class XenOpservOperationModel extends Model<InferAttributes<XenOpservOperationModel>, InferCreationAttributes<XenOpservOperationModel>> {
     declare operation_id: number;
     declare operation_name: string;
+    declare description: string;
     declare is_completed: boolean;
     declare type_name: string;
     declare date_start: number;
@@ -18,8 +19,10 @@ class XenOpservOperationModel extends Model<InferAttributes<XenOpservOperationMo
     declare game_id: number;
     declare tag: string;
     declare game_name: string;
-    declare edited_date: number;
     declare is_opsec: boolean;
+    declare discord_voice_channel_id: string;
+    declare discord_event_location: string;
+    declare edited_date: number;
 }
 
 XenOpservOperationModel.init({
@@ -29,6 +32,10 @@ XenOpservOperationModel.init({
         primaryKey: true
     },
     operation_name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    description: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -64,12 +71,20 @@ XenOpservOperationModel.init({
         type: DataTypes.STRING,
         allowNull: false
     },
-    edited_date: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     is_opsec: {
         type: DataTypes.BOOLEAN,
+        allowNull: false
+    },
+    discord_voice_channel_id: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    discord_event_location: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    edited_date: {
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 }, {

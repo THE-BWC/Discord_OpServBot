@@ -21,7 +21,8 @@ import {
     DiscordThreadController,
     OpsecOpPostingController,
     DiscordNicknameController,
-    DiscordChannelController
+    DiscordChannelController,
+    DiscordEventController
 } from "../controller/index.js";
 
 // API imports
@@ -42,6 +43,7 @@ import {
 } from "../interfaces/modules.interface.js";
 import {
     INTDiscordChannelController,
+    INTDiscordEventController,
     INTDiscordNicknameController,
     INTDiscordOpsecOpPostingController,
     INTDiscordThreadController
@@ -60,6 +62,7 @@ export default class BWC_Client extends Client {
     public opsecOpPostingController: INTDiscordOpsecOpPostingController;
     public nicknameController: INTDiscordNicknameController;
     public channelController: INTDiscordChannelController;
+    public eventController: INTDiscordEventController;
 
     public API: INTApi;
 
@@ -81,6 +84,7 @@ export default class BWC_Client extends Client {
         this.opsecOpPostingController = new OpsecOpPostingController(this);
         this.nicknameController = new DiscordNicknameController(this);
         this.channelController = new DiscordChannelController(this);
+        this.eventController = new DiscordEventController(this);
 
         this.API = new API();
 

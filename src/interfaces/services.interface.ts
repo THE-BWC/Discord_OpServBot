@@ -1,7 +1,8 @@
 import { DiscordChannelTypeEnum } from "./enums.interface.js";
 import {
     DiscordChannelModel,
-    OperationModel
+    OperationModel,
+    DiscordEventModel
 } from "../database/models/bot/index.js";
 import {
     XenOpservOperationModel,
@@ -48,9 +49,18 @@ export interface INTOperationService {
     setOperationNotificationStatus(operationId: number, isNotified: boolean): Promise<[affectedCount: number]>;
 }
 
+export interface INTEventService {
+    getEventByOpId(opId: number): Promise<DiscordEventModel | null>;
+    getAllEvents(): Promise<DiscordEventModel[]>;
+    addEvent(event_id: string, opId: number, opEditedDate: number, guildId: string): Promise<DiscordEventModel>;
+    updateEvent(opId: number, opEditedDate: number): Promise<[affectedCount: number]>;
+    deleteEvent(opId: number): Promise<number>;
+}
+
 export interface INTXenOperationService {
     getUpcomingOperations(): Promise<XenOpservOperationModel[]>;
     getUpcomingOpsecOperations(): Promise<XenOpservOperationModel[]>;
+    getOperationByOpId(opId: number): Promise<XenOpservOperationModel | null>;
 }
 
 export interface INTXenUserService {

@@ -6,16 +6,19 @@ import {
     DiscordThreadModel,
     DiscordChannelModel,
     DiscordRapidResponseButtonModel,
-    OperationModel
+    OperationModel,
+    DiscordEventModel
 } from "../models/bot/index.js";
 import {
     guildService,
     threadService,
     channelService,
     operationService,
+    eventService
 } from "../services/index.js";
 import {
     INTChannelService,
+    INTEventService,
     INTGuildService,
     INTOperationService,
     INTThreadService
@@ -26,12 +29,14 @@ export class BotDatabaseProvider {
     public threadService: INTThreadService;
     public channelService: INTChannelService;
     public operationService: INTOperationService;
+    public eventService: INTEventService;
 
     constructor() {
         this.guildService = guildService;
         this.threadService = threadService;
         this.channelService = channelService;
         this.operationService = operationService;
+        this.eventService = eventService;
     }
 
     async init(client: BWC_Client, forceSync: boolean = false, alterSync: boolean = false) {
@@ -47,6 +52,9 @@ export class BotDatabaseProvider {
 
         DiscordChannelModel.hasMany(DiscordRapidResponseButtonModel, { foreignKey: 'channel_id' });
         DiscordRapidResponseButtonModel.belongsTo(DiscordChannelModel, { targetKey: 'channel_id', foreignKey: 'channel_id' });
+
+        DiscordGuildModel.hasMany(DiscordEventModel, { foreignKey: 'guild_id' });
+        DiscordEventModel.belongsTo(DiscordGuildModel, { foreignKey: 'guild_id' });
 
         try {
             await botDatabase.authenticate()
@@ -65,6 +73,7 @@ export class BotDatabaseProvider {
             // This is required since the built-in sync({ force: true }) does not work
             // correctly with associations and ends up dropping the tables in the wrong order
             try {
+                await DiscordEventModel.drop();
                 await OperationModel.drop();
                 await DiscordRapidResponseButtonModel.drop();
                 await DiscordThreadModel.drop();

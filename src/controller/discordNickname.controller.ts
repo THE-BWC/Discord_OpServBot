@@ -26,9 +26,9 @@ export default class DiscordNicknameController {
 
         let guild: Guild;
         try {
-         guild = await this.client.guilds.fetch(this.client.getMainGuild())
+         guild = await this.client.guilds.fetch(this.client.getMainGuildId())
         } catch (error: any) {
-            this.client.logger.info(`Guild ${this.client.getMainGuild()} does not exist`, { label: 'CONTROLLER' });
+            this.client.logger.info(`Guild ${this.client.getMainGuildId()} does not exist`, { label: 'CONTROLLER' });
             return { message: `ERROR - Failed to fetch BWC Discord Server from Bot. Please verify correct Server ID` }
         }
 

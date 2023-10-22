@@ -1,4 +1,14 @@
+// Discord JS
+import {
+    GuildScheduledEventEntityType,
+    GuildScheduledEventPrivacyLevel,
+    GuildVoiceChannelResolvable
+} from "discord.js";
+
+// Bot
 import { BWC_Client } from "../lib/index.js";
+
+// Services
 import {
     INTGuildService,
     INTChannelService,
@@ -6,11 +16,20 @@ import {
     INTXenUserService,
     INTOperationService,
     INTXenDiscordService,
-    INTXenOperationService
+    INTXenOperationService,
+    INTEventService
 } from "./services.interface.js";
-import { DiscordChannelTypeEnum, DiscordModalTypeEnum } from "./enums.interface.js";
+
+// Enums
+import {
+    DiscordChannelTypeEnum,
+    DiscordModalTypeEnum
+} from "./enums.interface.js";
+
+// Models
 import { OperationModel } from "../database/models/bot/index.js";
 import { XenOpservOperationModel } from "../database/models/xen/index.js";
+
 
 
 export interface INTUtilities {
@@ -32,6 +51,7 @@ export interface INTBotDatabaseProvider {
     threadService: INTThreadService;
     channelService: INTChannelService;
     operationService: INTOperationService;
+    eventService: INTEventService;
 }
 
 export interface INTXenDatabaseProvider {
@@ -67,6 +87,17 @@ export interface INTRapidResponseButton {
     channel_id: string;
     guild_id: string;
     created_date: number;
+}
+
+export interface INTDiscordEventOptions {
+    name: string;
+    description: string | undefined;
+    scheduledStartTime: Date;
+    scheduledEndTime: Date;
+    entityType: GuildScheduledEventEntityType;
+    privacyLevel: GuildScheduledEventPrivacyLevel;
+    channel?: GuildVoiceChannelResolvable;
+    entityMetadata?: { location: string; }
 }
 
 export interface INTApi {

@@ -23,3 +23,10 @@ export interface INTDiscordNicknameController {
 export interface INTDiscordChannelController {
     getAllVoiceChannels(): Promise<{ id: string; name: string; }[]>;
 }
+
+export interface INTDiscordEventController {
+    syncEvents(): Promise<void>;
+    createEvent(opId: number): Promise<void>;
+    updateEvent(opId: number): Promise<void>;
+    deleteDiscordEvent(opId: number): Promise<void>;
+}
