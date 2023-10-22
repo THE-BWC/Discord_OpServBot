@@ -111,7 +111,7 @@ export default class BWC_Client extends Client {
         eventHandler(this).then(() => this.logger.info(`Loaded ${this.eventNames().length - 1} events!`, { label: 'DISCORD' }));
     }
 
-    public getMainGuild() {
+    public getMainGuildId() {
         // TODO: Return the main guild id from the database
         return "565959084990267393";
     }
