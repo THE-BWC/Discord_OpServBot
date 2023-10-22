@@ -11,7 +11,7 @@ export interface INTDiscordThreadController {
 }
 
 export interface INTDiscordOpsecOpPostingController {
-    getOps(): Promise<void>;
+    getOpsAndInsertToDB(): Promise<void>;
     sendOpLists(): Promise<void>;
     notifyOps(): Promise<void>;
 }

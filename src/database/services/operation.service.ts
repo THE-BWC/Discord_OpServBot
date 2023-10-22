@@ -8,7 +8,7 @@ import { OperationModel } from '../models/bot/index.js';
 export const getAllOperations = async (): Promise<OperationModel[]> => {
     return await OperationModel.findAll({
         order: [
-            ['start_time', 'ASC']
+            ['operation_id', 'ASC']
         ]
     });
 }
@@ -26,7 +26,7 @@ export const getOperationsByGameId = async (gameId: number): Promise<OperationMo
             game_id: gameId
         },
         order: [
-            ['start_time', 'ASC']
+            ['operation_id', 'ASC']
         ]
     });
 }
@@ -40,7 +40,7 @@ export const getOperationsByGameId = async (gameId: number): Promise<OperationMo
  */
 export const insertOperations = async (operations: OperationModel[]): Promise<OperationModel[]> => {
     return await OperationModel.bulkCreate(operations, {
-        updateOnDuplicate: ["operation_name", "is_completed", "type_name", "date_start", "date_end", "leader_username", "game_id", "tag", "game_name", "edited_date", "is_opsec"]
+        updateOnDuplicate: ["game_id"]
     });
 }
 
