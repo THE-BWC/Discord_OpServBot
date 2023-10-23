@@ -29,12 +29,13 @@ export class API {
     }
 
     async init(client: BWC_Client, enableHttps = false) {
-        let app = express();
+        const app = express();
         app.set('client', client);
 
         let server: https.Server<typeof http.IncomingMessage, typeof http.ServerResponse> | http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>,
-            observer = new Observer(),
             options = {};
+        const observer = new Observer();
+
 
         if (enableHttps) {
             if (process.env.NODE_EXTRA_CA_CERTS) {
@@ -87,29 +88,29 @@ export class API {
         if (enableHttps) {
             observer.on('cert-changed', () => {
                 setTimeout(() => {
-                    let cert = fs.readFileSync(`${sslFolder}/${sslDomain}.crt`),
+                    const cert = fs.readFileSync(`${sslFolder}/${sslDomain}.crt`),
                         key = fs.readFileSync(`${sslFolder}/${sslDomain}.key`);
-                    updateContext(cert, key);
+                    this.updateContext(client, server, cert, key);
                 }, 5000)
             })
 
             observer.watchFolder(sslFolder, client);
+        }
+    }
 
-            function updateContext(cert: Buffer, key: Buffer) {
-                try {
-                    if (server instanceof https.Server) {
-                        server.setSecureContext({
-                            cert: cert,
-                            key: key
-                        })
-                        client.logger.info('Certificate has been updated', { label: 'API' });
-                    } else {
-                        client.logger.error('Unable to update the certificate:', { label: 'API', error: 'Server is not an instance of https.Server' });
-                    }
-                } catch (error: any) {
-                    client.logger.error('Unable to update the certificate:', { label: 'API', error: error.stack });
-                }
+    private async updateContext(client: BWC_Client, server: https.Server<typeof http.IncomingMessage, typeof http.ServerResponse> | http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>, cert: Buffer, key: Buffer) {
+        try {
+            if (server instanceof https.Server) {
+                server.setSecureContext({
+                    cert: cert,
+                    key: key
+                })
+                client.logger.info('Certificate has been updated', { label: 'API' });
+            } else {
+                client.logger.error('Unable to update the certificate:', { label: 'API', error: 'Server is not an instance of https.Server' });
             }
+        } catch (error: any) {
+            client.logger.error('Unable to update the certificate:', { label: 'API', error: error.stack });
         }
     }
 }

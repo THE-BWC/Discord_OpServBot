@@ -41,13 +41,13 @@ export default class DiscordNicknameController {
         }
 
         if (guildUser.user.id !== guildUser.guild.ownerId) {
-            let userUsername = await this.client.xenDatabaseProvider.xenUserService.getUserByUserId(forumUserId);
+            const userUsername = await this.client.xenDatabaseProvider.xenUserService.getUserByUserId(forumUserId);
             if (userUsername === null || userUsername === undefined || !userUsername.username) {
                 this.client.logger.error(`Forum User ${forumUserId} does not exist in the database`, { label: 'CONTROLLER' });
                 return { message: `ERROR - Forum User ${forumUserId} does not exist in the database` }
             }
 
-            let newNickname = `[BWC] ${userUsername.username}`;
+            const newNickname = `[BWC] ${userUsername.username}`;
             await guildUser.setNickname(newNickname)
                 .catch(error => {
                     this.client.logger.error(`Error setting nickname for user ${user.discord_user_id} in guild ${guild.id}`, { label: 'CONTROLLER', error: error.stack });

@@ -15,8 +15,8 @@ import { BWC_Client } from "../lib/index.js";
  *
  * @returns {Array} - Array with the sizes
  */
-export function chunkNumber(number: number, n: number) {
-    let array = new Array(Math.floor(number / n)).fill(n).concat(number % n);
+export function chunkNumber(number: number, n: number): any[] {
+    const array = new Array(Math.floor(number / n)).fill(n).concat(number % n);
     if (array[array.length-1] === 0) {
         array.pop()
     }
@@ -53,7 +53,7 @@ export function chunkArray(array: { length: number; slice: (arg0: number, arg1: 
  * @returns {String} - Returns a string with the correct Date Time format.
  */
 export function unixFormat(unix: number) {
-    let options = {
+    const options = {
         year: 'numeric' as const,
         month: '2-digit' as const,
         day: '2-digit' as const,
@@ -109,17 +109,7 @@ export const convertXenOpToOp = async (client: BWC_Client, op: XenOpservOperatio
             if (user) {
                 return OperationModel.build({
                     operation_id: op.operation_id,
-                    operation_name: op.operation_name,
-                    is_completed: op.is_completed,
-                    type_name: op.type_name,
-                    date_start: op.date_start,
-                    date_end: op.date_end,
-                    leader_username: user.username,
                     game_id: op.game_id,
-                    tag: op.tag,
-                    game_name: op.game_name,
-                    edited_date: op.edited_date,
-                    is_opsec: op.is_opsec,
                     notified: false
                 })
             } else {

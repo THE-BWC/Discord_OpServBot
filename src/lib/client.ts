@@ -73,9 +73,9 @@ export default class BWC_Client extends Client {
 
     public API: INTApi;
 
-    public commands: Collection<String, CommandModule>
-    public buttons: Collection<String, ButtonModule>
-    public modals: Collection<String, ModalModule>
+    public commands: Collection<string, CommandModule>
+    public buttons: Collection<string, ButtonModule>
+    public modals: Collection<string, ModalModule>
 
     constructor(options: ClientOptions) {
         super(options);
@@ -96,9 +96,9 @@ export default class BWC_Client extends Client {
 
         this.API = new API(this);
 
-        this.commands = new Collection<String, CommandModule>();
-        this.buttons = new Collection<String, ButtonModule>();
-        this.modals = new Collection<String, ModalModule>();
+        this.commands = new Collection<string, CommandModule>();
+        this.buttons = new Collection<string, ButtonModule>();
+        this.modals = new Collection<string, ModalModule>();
 
         this.loadCommands();
         this.loadButtons();

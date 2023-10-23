@@ -16,7 +16,7 @@ export default class DiscordThreadController {
         const guild = await this.client.guilds.fetch(this.client.getMainGuildId());
         const channels = guild.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice);
 
-        let formattedChannels: { id: string; name: string; }[] = [];
+        const formattedChannels: { id: string; name: string; }[] = [];
         channels.forEach(channel => {
             formattedChannels.push({
                 id: channel.id,

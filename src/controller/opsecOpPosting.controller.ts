@@ -26,8 +26,8 @@ export default class OpsecOpPostingController {
                 }
                 this.client.logger.info('Got ops', {label: 'CONTROLLER'});
 
-                let convertedOp: OperationModel[] = [];
-                for (let op in data) {
+                const convertedOp: OperationModel[] = [];
+                for (const op in data) {
                     await this.client.utilities.convertXenOpToOp(this.client, data[op])
                         .then(converted => {
                             if (converted !== null) {
@@ -53,7 +53,7 @@ export default class OpsecOpPostingController {
      * @returns {Promise<void>}
      */
     public async sendOpLists(): Promise<void> {
-        let ops = await this.client.xenDatabaseProvider.xenOperationService.getUpcomingOpsecOperations()
+        const ops = await this.client.xenDatabaseProvider.xenOperationService.getUpcomingOpsecOperations()
             .catch(error => {
                 this.client.logger.error('Error getting ops', { label: 'CONTROLLER', error: error.stack });
                 return;
@@ -63,22 +63,22 @@ export default class OpsecOpPostingController {
             return;
         }
 
-        let guilds = await this.client.botDatabaseProvider.guildService.getGuilds();
+        const guilds = await this.client.botDatabaseProvider.guildService.getGuilds();
         if (guilds === undefined || !guilds.length || guilds.length === 0) {
             this.client.logger.info('No guilds to send ops to', { label: 'CONTROLLER' })
             return;
         }
 
-        for (let guild in guilds) {
-            let channels = await this.client.botDatabaseProvider.channelService.getChannelsByTypeAndGuild(DiscordChannelTypeEnum.Game, guilds[guild].guild_id);
+        for (const guild in guilds) {
+            const channels = await this.client.botDatabaseProvider.channelService.getChannelsByTypeAndGuild(DiscordChannelTypeEnum.Game, guilds[guild].guild_id);
             if (channels === undefined || !channels.length || channels.length === 0) {
                 this.client.logger.info('No channels to send ops to', { label: 'CONTROLLER' })
                 return;
             }
 
-            for (let channel in channels) {
-                let channelOps: XenOpservOperationModel[] = [];
-                for (let op in ops) {
+            for (const channel in channels) {
+                const channelOps: XenOpservOperationModel[] = [];
+                for (const op in ops) {
                     if (ops[op].game_id === channels[channel].game_id) {
                         channelOps.push(ops[op]);
                     }
@@ -88,17 +88,17 @@ export default class OpsecOpPostingController {
                     return;
                 }
 
-                let targetChannel = this.client.channels.cache.get(channels[channel].channel_id);
+                const targetChannel = this.client.channels.cache.get(channels[channel].channel_id);
                 if (targetChannel === undefined || !(targetChannel instanceof TextChannel)) {
                     this.client.logger.info('Channel not found', { label: 'CONTROLLER' })
                     return;
                 }
                 if (channelOps.length <= 15 && channelOps.length >= 1) {
-                    let embed = await this.createOpEmbed(channelOps);
+                    const embed = await this.createOpEmbed(channelOps);
                     await targetChannel.send({embeds: [embed]});
                 } else if (channelOps.length > 15) {
-                    let embeds = await this.createChunkedOpEmbed(channelOps, 15);
-                    for (let embed in embeds) {
+                    const embeds = await this.createChunkedOpEmbed(channelOps, 15);
+                    for (const embed in embeds) {
                         await targetChannel.send({embeds: [embeds[embed]]});
                     }
                 }
@@ -112,14 +112,14 @@ export default class OpsecOpPostingController {
      * @returns {Promise<void>}
      */
     public async notifyOps(): Promise<void> {
-        let dateNow = Date.now() / 1000;
-        let ops = await this.client.botDatabaseProvider.operationService.getAllOperations();
+        const dateNow = Date.now() / 1000;
+        const ops = await this.client.botDatabaseProvider.operationService.getAllOperations();
         if (ops === undefined || !ops.length || ops.length === 0) {
             this.client.logger.info('No ops to notify', { label: 'CONTROLLER' })
             return;
         }
 
-        for (let op in ops) {
+        for (const op in ops) {
             const operation = await this.client.xenDatabaseProvider.xenOperationService.getOperationByOpId(ops[op].operation_id)
                 .catch(error => {
                     this.client.logger.error('Error getting op', { label: 'CONTROLLER', error: error.stack });
@@ -130,16 +130,16 @@ export default class OpsecOpPostingController {
                 return;
             }
 
-            let startDate = operation.date_start;
+            const startDate = operation.date_start;
             if ((dateNow > (startDate - (60 * 30))) && (dateNow < startDate) && !ops[op].notified) {
-                let embed = await this.createNotifyEmbed(operation);
-                let guilds = await this.client.botDatabaseProvider.guildService.getGuilds();
+                const embed = await this.createNotifyEmbed(operation);
+                const guilds = await this.client.botDatabaseProvider.guildService.getGuilds();
                 if (guilds === undefined || !guilds.length || guilds.length === 0) {
                     this.client.logger.info('No guilds to send ops to', { label: 'CONTROLLER' })
                     return;
                 }
 
-                for (let guild in guilds) {
+                for (const guild in guilds) {
                     let targetChannel = await this.client.botDatabaseProvider.channelService.getChannelsByGameIdAndGuild(operation.game_id, guilds[guild].guild_id);
                     if (targetChannel === undefined || !targetChannel.length || targetChannel.length === 0) {
                         targetChannel = await this.client.botDatabaseProvider.channelService.getChannelsByTypeAndGuild(DiscordChannelTypeEnum.Announcement, guilds[guild].guild_id);
@@ -149,8 +149,8 @@ export default class OpsecOpPostingController {
                         }
                     }
 
-                    for (let channel in targetChannel) {
-                        let target = this.client.channels.cache.get(targetChannel[channel].channel_id);
+                    for (const channel in targetChannel) {
+                        const target = this.client.channels.cache.get(targetChannel[channel].channel_id);
                         if (target === undefined || !(target instanceof TextChannel)) {
                             this.client.logger.info('Channel not found', { label: 'CONTROLLER' })
                             break;
@@ -170,11 +170,11 @@ export default class OpsecOpPostingController {
      * @returns {Promise<EmbedBuilder>} The embed for the ops
      */
     private async createOpEmbed(ops: XenOpservOperationModel[]): Promise<EmbedBuilder> {
-        let embed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setTitle("Upcoming OPSEC Operations")
             .setColor(embedColor as ColorResolvable)
 
-        for (let op in ops) {
+        for (const op in ops) {
             const leader = await this.client.xenDatabaseProvider.xenUserService.getUserByUserId(String(ops[op].leader_user_id));
             embed.addFields({
                 name: `[${ops[op].tag}] ${ops[op].game_name}`,
@@ -197,14 +197,14 @@ export default class OpsecOpPostingController {
      * @returns {Promise<EmbedBuilder[]>} The array of embeds for the ops
      */
     private async createChunkedOpEmbed(ops: XenOpservOperationModel[], size: number): Promise<EmbedBuilder[]> {
-        let chunkedArray: XenOpservOperationModel[][] = this.client.utilities.chunkArray(ops, size);
-        let embeds = [];
-        for (let chunk in chunkedArray) {
-            let embed = new EmbedBuilder()
+        const chunkedArray: XenOpservOperationModel[][] = this.client.utilities.chunkArray(ops, size);
+        const embeds = [];
+        for (const chunk in chunkedArray) {
+            const embed = new EmbedBuilder()
                 .setTitle("Upcoming OPSEC Operations")
                 .setColor(embedColor as ColorResolvable)
 
-            for (let op in chunkedArray[chunk]) {
+            for (const op in chunkedArray[chunk]) {
                 const leader = await this.client.xenDatabaseProvider.xenUserService.getUserByUserId(String(ops[op].leader_user_id));
                 embed.addFields({
                     name: `[${chunkedArray[chunk][op].tag}] ${chunkedArray[chunk][op].game_name}`,
