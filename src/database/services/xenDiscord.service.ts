@@ -1,4 +1,4 @@
-import { XenDiscordUserLinks, XenDiscordKeyRoles } from '../models/xen/index.js';
+import { XenDiscordUserLinks, XenDiscordRoles } from '../models/xen/index.js';
 
 /**
  * Get all discord link info from the database
@@ -25,27 +25,18 @@ export async function getDiscordLinkInfoByForumUserId(userId: string) {
 }
 
 /**
- * Get a discord key role from the database by the role name
+ * Get discord link info from the database by their discord user ID
  *
- * @param   {String}    roleName    The role name to get
+ * @param   {String}    discordUserId   The discord user ID to get
  *
- * @returns {Promise<XenDiscordKeyRoles>} The role from the database
+ * @returns {Promise<XenDiscordUserLinks>} The user from the database
  */
-export async function getDiscordKeyRoleByRoleName(roleName: string): Promise<XenDiscordKeyRoles | null> {
-    return await XenDiscordKeyRoles.findOne({
+export async function getDiscordLinkInfoByDiscordUserId(discordUserId: string) {
+    return await XenDiscordUserLinks.findOne({
         where: {
-            name: roleName
+            discord_user_id: discordUserId
         }
     });
-}
-
-/**
- * Get all discord key roles from the database
- *
- * @returns {Promise<XenDiscordKeyRoles>} The role from the database
- */
-export async function getAllDiscordKeyRoles(): Promise<XenDiscordKeyRoles[]> {
-    return await XenDiscordKeyRoles.findAll();
 }
 
 /**
@@ -65,4 +56,28 @@ export async function setDiscordLinkInfoByForumUserId(userId: number, discordUse
         discord_username: discordUsername,
         discord_discrim: discordDiscrim
     });
+}
+
+/**
+ * Get a discord key role from the database by the role name
+ *
+ * @param   {String}    roleName    The role name to get
+ *
+ * @returns {Promise<XenDiscordRoles>} The role from the database
+ */
+export async function getDiscordRoleByRoleName(roleName: string): Promise<XenDiscordRoles | null> {
+    return await XenDiscordRoles.findOne({
+        where: {
+            name: roleName
+        }
+    });
+}
+
+/**
+ * Get all discord key roles from the database
+ *
+ * @returns {Promise<XenDiscordRoles>} The role from the database
+ */
+export async function getAllDiscordRoles(): Promise<XenDiscordRoles[]> {
+    return await XenDiscordRoles.findAll();
 }

@@ -30,3 +30,8 @@ export interface INTDiscordEventController {
     updateEvent(opId: number): Promise<void>;
     deleteDiscordEvent(opId: number): Promise<void>;
 }
+
+export interface INTDiscordRolesController {
+    syncRolesByForumUserId(forumUserId: string): Promise<{ message: string }>;
+    syncRolesByDiscordUserId(discordUserId: string): Promise<{ message: string }>;
+}

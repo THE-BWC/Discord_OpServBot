@@ -8,8 +8,9 @@ import {
     XenOpservOperationModel,
     XenUserModel,
     XenDiscordUserLinks,
-    XenDiscordKeyRoles
+    XenDiscordRoles
 } from "../database/models/xen/index.js";
+
 
 export interface INTGuildService {
     getGuild(guildId: string): Promise<any>;
@@ -72,7 +73,8 @@ export interface INTXenUserService {
 export interface INTXenDiscordService {
     getAllDiscordLinkInfo(): Promise<XenDiscordUserLinks[]>;
     getDiscordLinkInfoByForumUserId(userId: string): Promise<XenDiscordUserLinks | null>;
-    getDiscordKeyRoleByRoleName(roleName: string): Promise<XenDiscordKeyRoles | null>;
-    getAllDiscordKeyRoles(): Promise<XenDiscordKeyRoles[]>;
+    getDiscordLinkInfoByDiscordUserId(discordUserId: string): Promise<XenDiscordUserLinks | null>;
     setDiscordLinkInfoByForumUserId(userId: number, discordUserId: string, discordUsername: string, discordDiscrim: string): Promise<XenDiscordUserLinks | null>;
+    getDiscordRoleByRoleName(roleName: string): Promise<XenDiscordRoles | null>;
+    getAllDiscordRoles(): Promise<XenDiscordRoles[]>;
 }

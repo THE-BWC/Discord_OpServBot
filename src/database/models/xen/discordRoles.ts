@@ -7,30 +7,35 @@ import {
 import { xenDatabase } from "../../databaseConnection.js";
 const sequelize = xenDatabase;
 
-class XenDiscordKeyRoles extends Model<InferAttributes<XenDiscordKeyRoles>, InferCreationAttributes<XenDiscordKeyRoles>> {
+class XenDiscordRoles extends Model<InferAttributes<XenDiscordRoles>, InferCreationAttributes<XenDiscordRoles>> {
     declare id: number
-    declare role_id: string
     declare name: string
+    declare role_id: string
+    declare user_group_id: number
 }
 
-XenDiscordKeyRoles.init({
+XenDiscordRoles.init({
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
+    },
+    name: {
+        type: DataTypes.STRING(60),
+        allowNull: false
     },
     role_id: {
         type: DataTypes.STRING(60),
         allowNull: false,
         unique: true
     },
-    name: {
-        type: DataTypes.STRING(60),
-        allowNull: false
+    user_group_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     }
 }, {
     sequelize,
-    tableName: 'opserv_discord_key_roles',
+    tableName: 'opserv_discord_roles',
 })
 
-export default XenDiscordKeyRoles;
+export default XenDiscordRoles;
