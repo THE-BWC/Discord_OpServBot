@@ -27,6 +27,10 @@ const format = winston.format((info) => {
     const { timestamp, message, level } = info;
     info.message = `[${timestamp}] [${level.toUpperCase()}] - `;
 
+    if (info.api) {
+        info.message += `[API] - `;
+    }
+
     if (info.label) {
         info.message += `[${info.label}] - `;
     }

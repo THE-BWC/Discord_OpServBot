@@ -37,8 +37,10 @@ import {
     INTXenDatabaseProvider,
     INTCronJobs,
     INTUtilities,
-    INTApi
 } from "../interfaces/main.interface.js";
+import {
+    INTApi
+} from "../interfaces/api.interface.js";
 import {
     ButtonModule,
     CommandModule,
@@ -92,7 +94,7 @@ export default class BWC_Client extends Client {
         this.eventController = new DiscordEventController(this);
         this.rolesController = new DiscordRolesController(this);
 
-        this.API = new API();
+        this.API = new API(this);
 
         this.commands = new Collection<String, CommandModule>();
         this.buttons = new Collection<String, ButtonModule>();

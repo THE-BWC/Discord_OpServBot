@@ -1,9 +1,25 @@
-import express from "express";
+import express from 'express';
+import { BWC_Client } from "../../lib/index.js";
+import {
+    RoleRouter
+} from "./index.js";
+import {
+    INTRoleRouter
+} from "../../interfaces/api.interface.js";
 
-import roleRouter from "./role.router.js";
+export default class RouterV1 {
+    public roleRouter: INTRoleRouter;
 
-const RouterV1 = express.Router();
+    constructor(client: BWC_Client) {
+        this.roleRouter = new RoleRouter(client);
+    }
 
-RouterV1.use('/role', roleRouter);
+    public async init() {
+        let router = express.Router();
 
-export default RouterV1;
+        // Route /bot/api/v1
+        router.use('/role', await this.roleRouter.init());
+
+        return router;
+    }
+}

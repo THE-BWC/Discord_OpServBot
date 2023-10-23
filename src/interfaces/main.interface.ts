@@ -99,7 +99,3 @@ export interface INTDiscordEventOptions {
     channel?: GuildVoiceChannelResolvable;
     entityMetadata?: { location: string; }
 }
-
-export interface INTApi {
-    init(client: BWC_Client, enableHttps?: boolean): Promise<void>;
-}

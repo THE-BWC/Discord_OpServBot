@@ -1,16 +1,35 @@
-import express from "express";
-import RoleController from "../controllers/role.controller.js";
+import express from 'express';
+import {
+    BWC_Client
+} from "../../lib/index.js";
+import {
+    RoleController
+} from "../controllers/index.js";
+import {
+    INTRoleController
+} from "../../interfaces/api.interface.js";
 
-const roleRouter = express.Router();
 
-// bot/api/v?/role => POST
-roleRouter.post('/sync', RoleController.sync)
-roleRouter.post('/revoke', RoleController.revoke)
-roleRouter.post('/give', RoleController.give)
-roleRouter.post('/remove', RoleController.remove)
+export default class RoleRouter {
+    public roleController: INTRoleController;
 
-// bot/api/v?/role => GET
-roleRouter.get('/fetchallroles', RoleController.fetchAllRoles)
-roleRouter.get('/forcesyncusers', RoleController.forceSyncUsers)
+    constructor(client: BWC_Client) {
+        this.roleController = new RoleController(client);
+    }
 
-export default roleRouter;
+    public async init() {
+        let router = express.Router();
+
+        // POST routes /bot/api/v1/role
+        router.post('/sync', this.roleController.sync);
+        router.post('/revoke', this.roleController.revoke);
+        router.post('/give', this.roleController.give);
+        router.post('/remove', this.roleController.remove);
+
+        // GET routes /bot/api/v1/role
+        router.get('/fetchAllRoles', this.roleController.fetchAllRoles);
+        router.get('/forceSyncUsers', this.roleController.forceSyncUsers);
+
+        return router;
+    }
+}
