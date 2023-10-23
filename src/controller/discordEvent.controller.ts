@@ -1,4 +1,4 @@
-import htmlToText from 'html-to-text';
+import * as htmlToText from 'html-to-text';
 import { BWC_Client } from "../lib/index.js";
 import { XenOpservOperationModel } from "../database/models/xen/index.js";
 import {

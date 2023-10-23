@@ -48,7 +48,6 @@ DiscordChannelModel.init({
     type: {
         type: DataTypes.ENUM(...Object.values(DiscordChannelTypeEnum)),
         allowNull: false,
-        unique: true,
     },
     game_id: {
         type: DataTypes.INTEGER,

@@ -2,14 +2,16 @@
 import {
     Client,
     ClientOptions,
-    Collection } from "discord.js";
+    Collection
+} from "discord.js";
 import { Logger } from "winston";
 import { logger, utilities } from "./index.js";
 import {
     buttonHandler,
     commandHandler,
     eventHandler,
-    modalHandler } from "../handlers/index.js";
+    modalHandler
+} from "../handlers/index.js";
 import * as CronJobs from "../cron/cronjobs.js";
 
 // Database imports

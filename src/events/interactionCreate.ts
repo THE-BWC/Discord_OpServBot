@@ -1,8 +1,8 @@
 import { Collection, Events, GuildMember, Interaction } from 'discord.js';
 import { BWC_Client } from "../lib/index.js";
 import moment from 'moment';
-import {ButtonModule, CommandModule} from "../interfaces/modules.interface.js";
-import {TimeStamps} from "../interfaces/collections.interface.js";
+import { ButtonModule, CommandModule } from "../interfaces/modules.interface.js";
+import { TimeStamps } from "../interfaces/collections.interface.js";
 
 const buttonCooldown = new Collection();
 
