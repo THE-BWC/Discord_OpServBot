@@ -27,26 +27,31 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId('rr-medical')
                     .setLabel('Medical!')
+                    .setEmoji('1041065437405925489')
                     .setStyle(ButtonStyle.Primary),
 
                 new ButtonBuilder()
                     .setCustomId('rr-logistics')
                     .setLabel('Logistics!')
+                    .setEmoji('1041065417147420742')
                     .setStyle(ButtonStyle.Primary),
 
                 new ButtonBuilder()
                     .setCustomId('rr-prison')
                     .setLabel('Prison!')
+                    .setEmoji('1041065403545301072')
                     .setStyle(ButtonStyle.Primary),
 
                 new ButtonBuilder()
                     .setCustomId('rr-combat')
                     .setLabel('Combat!')
+                    .setEmoji('1041065389452435456')
                     .setStyle(ButtonStyle.Primary),
 
                 new ButtonBuilder()
                     .setCustomId('rr-econ')
                     .setLabel('Economy!')
+                    .setEmoji('1041065454338318416')
                     .setStyle(ButtonStyle.Primary)
             )
 
