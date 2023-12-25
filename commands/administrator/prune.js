@@ -21,7 +21,7 @@ module.exports = {
 
 		const amount = interaction.options.getInteger('amount');
 		if (amount <= 1 || amount > 100) {
-			return interaction.followUp({ content: 'You need to input a number between 1 and 99.', ephemeral: true });
+			return interaction.editReply({ content: 'You need to input a number between 1 and 99.' });
 		}
 
 		await interaction.channel.bulkDelete(amount, true)
@@ -30,6 +30,6 @@ module.exports = {
 				interaction.channel.send('There was an error trying to prune messages in this channel!');
 			});
 
-		await interaction.editReply({ content: `Successfully pruned \`${amount}\` messages.`, ephemeral: true })
+		await interaction.editReply({ content: `Successfully pruned \`${amount}\` messages.` })
 	}
 }
