@@ -121,7 +121,7 @@ The application uses the `winston` logger to log messages to the console and to 
 
 ## Contact
 If you have any questions, feel free to contact me on:
-- [BWC Discord](https://discord.com/invite/the-bwc) `[BWC] Patrick`
+- [BWC Discord](https://discord.the-bwc.com/) `[BWC] Patrick`
 - [BWC Forums](https://the-bwc.com/forum/index.php) `Patrick`.
 
 ## Credits
