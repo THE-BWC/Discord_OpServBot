@@ -120,7 +120,9 @@ The application uses the `winston` logger to log messages to the console and to 
 5. Enjoy!
 
 ## Contact
-If you have any questions, feel free to contact me on Discord: `bwcpatrick`, or on the [BWC Discord server](https://discord.com/invite/the-bwc) `[BWC] Patrick` or the [BWC forums](https://the-bwc.com/forum/index.php) `Patrick`.
+If you have any questions, feel free to contact me on:
+- [BWC Discord](https://discord.com/invite/the-bwc) `[BWC] Patrick`
+- [BWC Forums](https://the-bwc.com/forum/index.php) `Patrick`.
 
 ## Credits
 - [Discord.js](https://discord.js.org/#/)
