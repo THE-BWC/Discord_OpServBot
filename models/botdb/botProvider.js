@@ -22,20 +22,20 @@ class BotSettingsProvider {
         Guild.hasMany(DiscordOpsecRoles)
         Guild.hasMany(GameChannel)
 
-        if (forceSync) {
-            await bot.sync({ force: true })
-                .catch(err => console.log(err))
-        } else {
-            await bot.sync()
-                .catch(err => console.log(err))
-        }
-
         try {
             await bot.authenticate();
             this.client.logger.info('[DATABASE] - Successfully connected to the bot DB');
         } catch (e) {
             this.client.logger.error(e.stack)
             process.exit(-1)
+        }
+
+        if (forceSync) {
+            await bot.sync({ force: true })
+                .catch(err => console.log(err))
+        } else {
+            await bot.sync()
+                .catch(err => console.log(err))
         }
 
 
@@ -55,20 +55,13 @@ class BotSettingsProvider {
 
     ///////////////////// Guild /////////////////////
     // Fetches id, prefix, log, log-channel
-    async fetchGuild(guildId, key) {
-        if (!guildId && !key) {
-            return await Guild.findAll({ raw: true })
-                .catch(err => this.client.logger.error(err.stack))
+    async fetchGuilds() {
+        return await Guild.findAll({ raw: true })
+            .catch((err) => {
+                this.client.logger.error(err.stack)
+            return false
+            })
         }
-        if (!key) {
-            return await Guild.findByPk(guildId, { raw: true })
-                .catch(err => this.client.logger.error(err.stack))
-        } else {
-            return await Guild.findByPk(guildId, { raw: true })
-                .then(result => result.getDataValue(key))
-                .catch(err => this.client.logger.error(err.stack))
-        }
-    }
 
     ///////////////////// Set Channels /////////////////////
     async setAnnouncementChannel(guildId, channelId) {

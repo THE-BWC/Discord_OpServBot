@@ -1,5 +1,8 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config()
+
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
 
 const xenforo = new Sequelize(process.env.DB_NAME1, process.env.DB_USER1, process.env.DB_PASS1, {
     host: process.env.DB_HOST1,
