@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  opservbot:
+    container_name: opservbot
+    image: ghcr.io/the-bwc/discord_opservbot:latest
+    restart: unless-stopped
+    environment:
+      TOKEN: ${YOUR_DISCORD_BOT_TOKEN:-Bot token is missing}
+      DB_HOST1: ${MYSQL_DB_HOST1:-Host1 is missing}
+      DB_PORT1: 3306
+      DB_NAME1: ${MYSQL_DB_NAME1:-Name1 is missing}
+      DB_USER1: ${MYSQL_USER:-root}
+      DB_PASS1: ${MYSQL_PASSWORD:-root}
+      DB_HOST2: ${MYSQL_DB_HOST2:-Host2 is missing}
+      DB_PORT2: 3306
+      DB_NAME2: ${MYSQL_DB_NAME1:-Name1 is missing}
+      DB_USER2: ${MYSQL_USER:-root}
+      DB_PASS2: ${MYSQL_PASSWORD:-root}
+    networks:
+      - opservbot
+    volumes:
+      - ./DiscordIntegration.log:/opt/node_app/app/DiscordIntegration.log
+      - ./settings.json:/opt/node_app/app/settings.json
+
+networks:
+  opservbot:
+    external: true
