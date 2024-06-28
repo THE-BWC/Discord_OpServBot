@@ -1,0 +1,9 @@
+.dockerignore
+.git
+.github
+.gitignore
+*Dockerfile*
+*docker-compose*
+node_modules
+ecosystem.config.js
+sonar-project.properties
