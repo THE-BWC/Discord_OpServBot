@@ -1,13 +1,14 @@
-var http = require('http');
+const settings = require('./settings.json');
+let http = require('http');
 
-var options = {
+let options = {
   timeout: 2000,
   host: 'localhost',
-  port: process.env.PORT || 4500,
+  port: settings.apiPort || 4500,
   path: '/healthz' // must be the same as HEALTHCHECK in Dockerfile
 };
 
-var request = http.request(options, (res) => {
+let request = http.request(options, (res) => {
   console.info('STATUS: ' + res.statusCode);
   process.exitCode = (res.statusCode === 200) ? 0 : 1;
   process.exit();

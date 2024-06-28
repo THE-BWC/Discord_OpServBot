@@ -3,22 +3,22 @@
     "SSLDomain": "",
     "SSLFolder": "",
 
-    "apiPort": 4500,
+    "apiPort": 8080,
 
-    "settings_clientId": "881597230165946408",
+    "settings_clientId": "",
 
-    "owners": ["299192199843676171"],
-    "developers": ["299192199843676171"],
+    "owners": [],
+    "developers": [],
 
-    "clientId": "798169647589490729",
-    "botMainDiscordServer": "378419940027269130",
+    "clientId": "",
+    "botMainDiscordServer": "",
 
-    "bwcRole": "891674166846185512",
-    "guestRole": "891673337632292914",
-    "verifyRole": "1000534479267434578",
-    "unsignedRole": "1000534520577130599",
+    "bwcRole": "",
+    "guestRole": "",
+    "verifyRole": "",
+    "unsignedRole": "",
 
-    "streamerRole": "965634025022701630",
+    "streamerRole": "",
 
     "embedColor": [200,0,0],
 
@@ -26,7 +26,7 @@
     "omitLockdownRoles": [],
 
     "creatorId": "299192199843676171",
-    "version": "1.0.0",
+    "version": "1.3.0",
     "library": "Discord.js",
     "Creator": "[BWC] Patrick#4943",
     "website": "https://the-bwc.com",
