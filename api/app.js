@@ -1,7 +1,6 @@
 const https = require('https');
 const fs = require('fs');
 const express = require('express')
-const basicAuth = require('express-basic-auth')
 const Observer = require('./services/observer')
 
 class API {
@@ -28,22 +27,16 @@ class API {
 
         app.use(express.json())
         app.use(express.urlencoded({extended: true}))
-        app.use(basicAuth({
-            users: {'opserv': 'test1234'},
-            unauthorizedResponse: getUnauthorizedResponse
-        }))
-
-        function getUnauthorizedResponse(req) {
-            return req.auth
-                ? ('ERROR - Incorrect API credentials provided')
-                : 'ERROR - No API credentials provided'
-        }
 
         app.get('/', async (req, res) => {
             res.json({
-                message: "Hello There"
+                message: "Ready"
             })
         })
+
+        app.get('/healthz', function (req, res) {
+            res.send('I am happy and healthy\n');
+          });
 
         const routerV1 = require('./routes/routerV1')
         app.use('/bot/api/v1', routerV1)
@@ -51,11 +44,11 @@ class API {
         try {
             if (enableHttps === true) {
                 server = https.createServer(options, app).listen(client.config.apiPort, () => {
-                    client.logger.info(`[API] - Api running on port ${client.config.apiPort}`)
+                    client.logger.info(`[API] - [HTTPS] - Api running on port ${client.config.apiPort}`)
                 })
             } else {
-                server = app.listen(client.config.apiPort, () => {
-                    client.logger.info(`[API] - Api running on port ${client.config.apiPort}`)
+                server = app.listen(client.config.apiPort, '0.0.0.0', () => {
+                    client.logger.info(`[API] - [HTTP] - Api running on port ${client.config.apiPort}`)
                 })
             }
         } catch (err) {
