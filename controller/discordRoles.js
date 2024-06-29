@@ -8,12 +8,17 @@ class DiscordRolesController {
                 return { message: `ERROR - Failed to fetch Discord information for user ${userId} from Database` }
             })
 
-        if (user[0]) {
-            user = user[0]
+            if (user[0]) {
+                user = user[0]
+            } else return { 
+                message: "Can't find members Discord ID in the Database"
+            }
+    
+            if (user) {
             let possibleMessage = await DiscordRolesController.#checkUserGroupIds(client, user)
             if (possibleMessage) return possibleMessage
 
-            let guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+            let guild = await client.guilds.fetch(client.config.botMainDiscordServer)
                 .catch(err => {
                     client.logger.error(err.stack)
                     return { message: `ERROR - Failed to fetch BWC Discord Server from Bot. Please verify correct Server ID in Settings file` }
@@ -29,30 +34,32 @@ class DiscordRolesController {
                 guestRole = guildRoles[1],
                 verifyRole = guildRoles[2],
                 unsignedRole = guildRoles[3]
+            client.logger.debug(bwcRole, guestRole, verifyRole, unsignedRole)
 
             if (!guildUser.roles.cache.has(bwcRole.firstKey())) {
+                client.logger.debug('Attempting to add BWC Role')
                 await guildUser.roles.add(bwcRole)
                     .catch(err => {
                         client.logger.error(err.stack)
                         return { message: "ERROR - Failed to add BWC Role" }
                     })
+                client.logger.debug('Attempting to remove Guest Role')
                 await guildUser.roles.remove(guestRole)
                     .catch(err => {
                         client.logger.error(err.stack)
                         return { message: "ERROR - Failed to remove Guest Role" }
-
                     })
+                client.logger.debug('Attempting to remove Verify Role')
                 await guildUser.roles.remove(verifyRole)
                     .catch(err => {
                         client.logger.error(err.stack)
                         return { message: "ERROR - Failed to remove Verify Role" }
-
                     })
+                client.logger.debug('Attempting to remove Unisgned Role')
                 await guildUser.roles.remove(unsignedRole)
                     .catch(err => {
                         client.logger.error(err.stack)
                         return { message: "ERROR - Failed to remove Unsigned Role" }
-
                     })
 
                 // Check if the user is the guild owner. We can't update the Nickname.
@@ -92,6 +99,10 @@ class DiscordRolesController {
         let user = await client.xenProvider.fetchDiscordLinkInfoForumUserId(userId)
 
         if (user[0]) {
+            user = user[0]
+        } else return { message: "Can't find members Discord ID in the Database" }
+
+        if (user) {
             let possibleMessage = await DiscordRolesController.#checkUserGroupIds(client, user)
             if (possibleMessage) return possibleMessage
 
@@ -117,6 +128,10 @@ class DiscordRolesController {
         let user = await client.xenProvider.fetchDiscordLinkInfoForumUserId(userId)
 
         if (user[0]) {
+            user = user[0]
+        } else return { message: "Can't find members Discord ID in the Database" }
+
+        if (user) {
             let possibleMessage = await DiscordRolesController.#checkUserGroupIds(client, user)
             if (possibleMessage) return possibleMessage
 
@@ -198,8 +213,12 @@ class DiscordRolesController {
                 continue
             }
 
-            await client.xenProvider.setDiscordLinkInfo(xenUser[0].user_id, user.id, user.user.username, user.user.discriminator)
-                .catch(err => client.logger.error(err.stack))
+            try {
+                await client.xenProvider.setDiscordLinkInfo(xenUser[0].user_id, user.id, user.user.username, user.user.discriminator)
+            } catch (err) {
+                client.logger.error(err.stack)
+                client.logger.info(`${xenUser[0].user_id} ${user.id} ${user.user.username} ${user.user.discriminator}`)
+            }
         }
 
         client.logger.info(`[ROLES] - [FAILED] Failed users: ${JSON.stringify(failedUsers)}`)
@@ -213,7 +232,6 @@ class DiscordRolesController {
      */
     static async #checkUserGroupIds(client, user) {
         client.logger.info(`[FUNCTION] - [PRIVATE] checkUserGroupIds function used`);
-        user = user[0]
         let userGroupIds = await client.xenProvider.fetchUserGroupIds(user.user_id)
             .catch(err => {
                 client.logger.error(err.stack)

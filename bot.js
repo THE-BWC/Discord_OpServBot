@@ -62,11 +62,11 @@ const client = new Client({
 /**
  * Logger
  */
+let logLevel = process.env.LOG_LEVEL || 'info'
 client.logger = Winston.createLogger({
     transports: [
-        new Winston.transports.Console({ format: Winston.format.simple() })
-    ],
-    format: Winston.format.printf((log) => `[${new Date().toLocaleString()}] - [${log.level.toUpperCase()}] - ${log.message}`)
+        new Winston.transports.Console({ format: Winston.format.printf((log) => `[${new Date().toLocaleString()}] - [${log.level.toUpperCase()}] - ${log.message}`), level: logLevel })
+    ]
 })
 
 /**
