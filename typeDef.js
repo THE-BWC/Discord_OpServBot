@@ -33,14 +33,6 @@
  * @property {Number[]} embedColor
  * @property {String[]} omitLockdownChannels
  * @property {String[]} omitLockdownRoles
- * @property {Number} SPAM_LIMIT
- * @property {Number} SPAM_TRACK_TIME
- * @property {Number} SPAM_TIME
- * @property {Number} SPAM_MUTE_TIME
- * @property {Number} DUPMSG_LIMIT
- * @property {Number} DUPMSG_TRACK_TIME
- * @property {Number} DUPMSG_TIME
- * @property {Number} DUPMSG_MUTE_TIME
  * @property {String} creatorId
  * @property {String} version
  * @property {String} library

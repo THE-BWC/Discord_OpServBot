@@ -30,7 +30,7 @@ class DiscordEventsController {
      */
     async createEvent(client, operationId) {
         client.logger.info(`[FUNCTION] - CreateEvent function used`);
-        const operation = await client.xenProvider.fetchOperationById(operationId, true)
+        const operation = await client.xenProvider.fetchOperationById(operationId, false)
         if (operation.length === 0) {
             client.logger.info(`[RETURNED] - OperationData length is 0. Returned`)
             return
@@ -86,7 +86,7 @@ class DiscordEventsController {
      */
     async updateDiscordEvents(client, operations) {
         client.logger.info(`[FUNCTION] - UpdateDiscordEvents function used`);
-        const guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        const guild = await client.guilds.fetch(client.config.botMainDiscordServer)
         const currentEvents = guild.scheduledEvents.cache.map(event => event)
         for (const op of operations) {
             let fetchedEvent = await client.botProvider.fetchEventEntry(op.operation_id)
@@ -118,7 +118,7 @@ class DiscordEventsController {
      */
     async deleteDiscordEvent(client, operationId) {
         client.logger.info(`[FUNCTION] - DeleteDiscordEvent function used`);
-        const guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        const guild = await client.guilds.fetch(client.config.botMainDiscordServer)
         const eventId = await client.botProvider.fetchEventEntry(operationId)
 
         if (eventId === null) {
@@ -215,7 +215,7 @@ class DiscordEventsController {
             client.logger.info(`[RETURNED] - Operation happened in the past. Returned`)
             return
         }
-        let guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        let guild = await client.guilds.fetch(client.config.botMainDiscordServer)
             .catch(err => client.logger.error(err.stack))
 
         let html = await DiscordEventsController.#parseHTML(client, operation.description)
@@ -231,7 +231,7 @@ class DiscordEventsController {
         }
 
         let options = (operation.discord_voice_channel_id !== "" && operation.discord_voice_channel_id !== null) ? {
-            name: operation.operation_name,
+            name: `[${operation.tag}] - ${operation.operation_name}`,
             description: html,
             scheduledStartTime: new Date(operation.date_start * 1000),
             scheduledEndTime: new Date(operation.date_end * 1000),
@@ -239,7 +239,7 @@ class DiscordEventsController {
             privacyLevel: 2,
             channel: voiceChannel
         } : {
-            name: operation.operation_name,
+            name: `[${operation.tag}] - ${operation.operation_name}`,
             description: html,
             scheduledStartTime: new Date(operation.date_start * 1000),
             scheduledEndTime: new Date(operation.date_end * 1000),

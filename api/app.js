@@ -36,7 +36,7 @@ class API {
 
         app.get('/healthz', function (req, res) {
             res.send('I am happy and healthy\n');
-          });
+        });
 
         const routerV1 = require('./routes/routerV1')
         app.use('/bot/api/v1', routerV1)

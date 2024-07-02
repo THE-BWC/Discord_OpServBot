@@ -9,7 +9,7 @@ const Operation = bot.define('operations', {
     },
     operation_name: {
         type: Sequelize.CHAR(255),
-        allowNull: true
+        allowNull: false
     },
     is_completed: {
         type: Sequelize.INTEGER,
@@ -29,7 +29,7 @@ const Operation = bot.define('operations', {
     },
     leader_username: {
         type: Sequelize.CHAR(255),
-        allowNull: true
+        allowNull: false
     },
     game_id: {
         type: Sequelize.INTEGER,
