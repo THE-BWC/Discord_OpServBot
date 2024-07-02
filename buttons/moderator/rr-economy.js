@@ -10,7 +10,7 @@ module.exports = {
     execute: async function (client, interaction) {
         if (interaction.customId === 'rr-econ') {
             const modal = new ModalBuilder()
-                .setCustomId('rr-economy')
+                .setCustomId('rr-econ')
                 .setTitle('Rapid Response Request')
 
             const location = new TextInputBuilder()

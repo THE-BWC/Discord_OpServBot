@@ -2,7 +2,7 @@ const CronJob = require('cron').CronJob;
 
 class CronJobs {
     // Sends operation list every day at 07:00:00 Opserv Time
-    at19_oClock(client) {
+    at07_oClock(client) {
         return new CronJob('00 00 7 * * *', () => {
             client.discordOpsecOpPosting.sendOpLists(client)
                 .catch(err => client.logger.error(err.stack))
@@ -27,7 +27,7 @@ class CronJobs {
 
     // Checks every 10 minutes for threads that need to be archived.
     archive10min(client) {
-        return new CronJob('*/10 * * * * *', () => {
+        return new CronJob('0 */10 * * * *', () => {
             client.discordThreadsController.archiveExpiredThreads(client)
                 .catch(err => client.logger.error(err.stack))
         }, null, true, 'America/New_York');

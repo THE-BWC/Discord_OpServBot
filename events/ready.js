@@ -15,12 +15,12 @@ module.exports = {
 		client.logger.info('[DISCORD] - Bot is online');
 
 		// Syncs valid Operations with Discord
-		// client.discordEventsController.sync(client)
-		// 	.catch(err => client.logger.error(err.stack));
+		client.discordEventsController.sync(client)
+			.catch(err => client.logger.error(err.stack));
 
 		// Start cron jobs for OPSEC Operation Posting.
-		client.cron.at19_oClock(client).start();
-		client.logger.info(`[CRONJOB] - Send Ops list at 19:00 - Started`);
+		client.cron.at07_oClock(client).start();
+		client.logger.info(`[CRONJOB] - Send Ops list at 07:00 - Started`);
 
 		client.cron.getOps30min(client).start();
 		client.logger.info(`[CRONJOB] - Get Ops every 30 minutes - Started`);

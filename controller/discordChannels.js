@@ -1,6 +1,6 @@
 class DiscordChannelsController {
     async getAllVoiceChannels(client) {
-        const guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        const guild = await client.guilds.fetch(client.config.botMainDiscordServer)
         let voiceChannels = await guild.channels.cache.filter(channel => channel.type === 2)
 
         let formattedChannelInfo = []

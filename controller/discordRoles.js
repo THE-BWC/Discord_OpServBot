@@ -8,13 +8,13 @@ class DiscordRolesController {
                 return { message: `ERROR - Failed to fetch Discord information for user ${userId} from Database` }
             })
 
-            if (user[0]) {
-                user = user[0]
-            } else return { 
-                message: "Can't find members Discord ID in the Database"
-            }
+        if (user[0]) {
+            user = user[0]
+        } else return { 
+            message: "Can't find members Discord ID in the Database"
+        }
     
-            if (user) {
+        if (user) {
             let possibleMessage = await DiscordRolesController.#checkUserGroupIds(client, user)
             if (possibleMessage) return possibleMessage
 
@@ -106,12 +106,12 @@ class DiscordRolesController {
             let possibleMessage = await DiscordRolesController.#checkUserGroupIds(client, user)
             if (possibleMessage) return possibleMessage
 
-            let guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+            let guild = await client.guilds.fetch(client.config.botMainDiscordServer)
 
             let role = guild.roles.cache.filter(role => role.id === roleId)
             if (!role) return { message: "Role not found. Contact S-1 for assistance." }
 
-            let guildUser = guild.members.cache.get(user[0].discord_user_id)
+            let guildUser = guild.members.cache.get(user.discord_user_id)
             if (!guildUser.roles.cache.find(r => r === role[0])) {
                 await guildUser.roles.add(role)
                 return { message: "SUCCESS - Role added" }
@@ -135,12 +135,12 @@ class DiscordRolesController {
             let possibleMessage = await DiscordRolesController.#checkUserGroupIds(client, user)
             if (possibleMessage) return possibleMessage
 
-            let guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+            let guild = await client.guilds.fetch(client.config.botMainDiscordServer)
 
             let role = guild.roles.cache.filter(role => role.id === roleId)
             if (!role) return { message: "Role not found. Contact S-1 for assistance." }
 
-            let guildUser = guild.members.cache.get(user[0].discord_user_id)
+            let guildUser = guild.members.cache.get(user.discord_user_id)
             if (!guildUser.roles.cache.find(r => r === role[0])) {
                 await guildUser.roles.remove(role)
                 return { message: "SUCCESS - Role removed" }
@@ -154,7 +154,7 @@ class DiscordRolesController {
 
     async fetchAllRoles(client) {
         client.logger.info(`[FUNCTION] - FetchAllRoles function used`);
-        const guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        const guild = await client.guilds.fetch(client.config.botMainDiscordServer)
         const roles = guild.roles.cache
             .filter(role => role.id !== guild.id)
             .sort((roleA, roleB) => roleB.rawPosition - roleA.rawPosition)
@@ -172,7 +172,7 @@ class DiscordRolesController {
     async forceSyncUsers(client) {
         client.logger.info(`[FUNCTION] forceSyncUsers function used`);
 
-        const guild = await client.guilds.fetch(client.config.settings_guildId_dev2)
+        const guild = await client.guilds.fetch(client.config.botMainDiscordServer)
         const bwcRole = await client.xenProvider.fetchKeyRole('BWC')
             .catch(err => client.logger.error(err.stack))
 

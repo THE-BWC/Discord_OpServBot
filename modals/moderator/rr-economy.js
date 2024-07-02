@@ -2,11 +2,11 @@ const { EmbedBuilder, ChannelType } = require("discord.js");
 
 module.exports = {
     data: {
-        custom_id: 'rr-economy'
+        custom_id: 'rr-econ'
     },
 
     execute: async function (client, interaction) {
-        if (interaction.customId === 'rr-economy') {
+        if (interaction.customId === 'rr-econ') {
             const location = interaction.fields.getTextInputValue('rr-input-location');
             const description = interaction.fields.getTextInputValue('rr-input-description');
             const voiceChannel = interaction.fields.getTextInputValue('rr-input-vc');

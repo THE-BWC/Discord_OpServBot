@@ -121,7 +121,7 @@ class XenforoSettingProvider {
                     opserv_operations.edited_date
                 FROM opserv_operations
                 INNER JOIN opserv_games ON opserv_operations.game_id = opserv_games.game_id
-                WHERE operation_id = ${operationId} AND is_opsec = ${opsec ? 1 : 0}`, { type: Sequelize.QueryTypes.SELECT })
+                WHERE operation_id = ${operationId} AND is_opsec = ${opsec ? 1 : 0}`,{ type: Sequelize.QueryTypes.SELECT })
             .catch(err => this.client.logger.error(err.stack))
     }
 

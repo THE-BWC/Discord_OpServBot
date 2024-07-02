@@ -17,7 +17,7 @@ class DiscordOpsecOpPosting {
             return
         }
 
-        let guilds = await client.botProvider.fetchGuild()
+        let guilds = await client.botProvider.fetchGuilds()
         for (let guild in guilds) {
             let channels = await client.botProvider.fetchGameChannels(guilds[guild].id)
             let excluded = []
@@ -25,7 +25,7 @@ class DiscordOpsecOpPosting {
             for (let channel in channels) {
                 let channelOps = []
                 for (let op in allOps) {
-                    if (allOps[op].game_id === parseInt(channels[channel].game_id)) {
+                    if (allOps[op].game_id === parseInt(channels[channel].id)) {
                         channelOps.push(allOps[op])
                     }
                 }

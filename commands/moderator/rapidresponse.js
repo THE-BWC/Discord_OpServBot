@@ -12,8 +12,7 @@ module.exports = {
      * @param {String[]} args
      */
     async execute(client, interaction, args) {
-        //const channel = interaction.options.getChannel('channel');
-        const channel = interaction.guild.channels.cache.get('1040069005303631893');
+        const channel = interaction.guild.channels.cache.get('1040786857824358471');
         const embed = new EmbedBuilder()
             .setTitle('Rapid Response')
             .setColor(client.config.embedColor)

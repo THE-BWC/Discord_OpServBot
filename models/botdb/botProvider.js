@@ -55,13 +55,28 @@ class BotSettingsProvider {
 
     ///////////////////// Guild /////////////////////
     // Fetches id, prefix, log, log-channel
+    async fetchGuild(guildId, key) {
+        if (!guildId && !key) {
+            return await Guild.findAll({ raw: true })
+                .catch(err => this.client.logger.error(err.stack))
+        }
+        if (!key) {
+            return await Guild.findByPk(guildId, { raw: true })
+                .catch(err => this.client.logger.error(err.stack))
+        } else {
+            return await Guild.findByPk(guildId, { raw: true })
+                .then(result => result.getDataValue(key))
+                .catch(err => this.client.logger.error(err.stack))
+        }
+    }
+
     async fetchGuilds() {
         return await Guild.findAll({ raw: true })
             .catch((err) => {
                 this.client.logger.error(err.stack)
             return false
             })
-        }
+    }
 
     ///////////////////// Set Channels /////////////////////
     async setAnnouncementChannel(guildId, channelId) {
@@ -263,7 +278,7 @@ class BotSettingsProvider {
         }
         if (id) {
             return await GameChannel.findAll({
-                where: { guildId: guildId, game_id: id },
+                where: { guildId: guildId, id: id },
                 raw: true
             }).catch(err => this.client.logger.error(err.stack))
         }

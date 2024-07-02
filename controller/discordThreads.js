@@ -25,7 +25,7 @@ class DiscordThreadsController {
 
     async archiveExpiredThreads(client) {
         for (const thread of client.threads.values()) {
-            if (thread.delete_at && thread.delete_at.getTime() < Date.now()) {
+            if (thread.delete_at && thread.delete_at.getTime() < Date.now() && thread.id !== undefined) {
                 await DiscordThreadsController.#archiveThread(client, thread)
                 await this.threadClosed(client, thread)
             }
