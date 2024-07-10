@@ -6,7 +6,6 @@ module.exports = {
         .setName('info')
         .setDescription('Info about the bot'),
     /**
-     *
      * @param {Client} client
      * @param {CommandInteraction} interaction
      * @param {String[]} args
@@ -14,7 +13,6 @@ module.exports = {
     async execute(client, interaction, args) {
         await interaction.deferReply()
             .then(async () => {
-
                 const owner = await interaction.guild.members.fetch(interaction.guild.ownerId)
                 let embed = new EmbedBuilder()
                     .setColor(client.config.embedColor)
