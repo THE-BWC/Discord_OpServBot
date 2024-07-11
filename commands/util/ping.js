@@ -20,9 +20,9 @@ module.exports = {
 				let pEmbed = new EmbedBuilder()
 					.setColor([200,0,0])
 					.setTitle("Pong!")
-					.addField(`**Bot Latency:**`, `${ping / 1000}s`, true)
-					.addField(`**API Latency:**`, `${interaction.client.ws.ping / 1000}s`, true)
-					.addField(`**Bot Region:**`, client.config.server_location, true)
+					.addFields({ name: `**Latency:**`, value: `${ping}ms`, inline: true })
+					.addFields({ name: `**API Latency:**`, value: `${interaction.client.ws.ping}ms`, inline: true})
+					.addFields({ name: `**Bot Region:**`, value: client.config.server_location, inline: true})
 				
 				await interaction.followUp({ embeds: [pEmbed] })
 			})
