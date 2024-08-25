@@ -132,9 +132,6 @@ class DiscordRolesController {
         } else return { message: "Can't find members Discord ID in the Database" }
 
         if (user) {
-            let possibleMessage = await DiscordRolesController.#checkUserGroupIds(client, user)
-            if (possibleMessage) return possibleMessage
-
             let guild = await client.guilds.fetch(client.config.botMainDiscordServer)
 
             let role = guild.roles.cache.filter(role => role.id === roleId)
