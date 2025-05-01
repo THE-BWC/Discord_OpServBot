@@ -13,11 +13,6 @@ module.exports = {
      * @param {String[]} args
      */
     async execute(client, interaction, args) {
-
-        //client.emit('messageUpdate', interaction.member, interaction.member)
-        // let discordLink = await client.xenProvider.fetchDiscordLinkInfo(299192199843676171)
-        // console.log(discordLink)
-        await client.discordEventController.CreateEvent(client)
-            .catch(err => client.logger.error(err.stack))
+        // Not implemented yet
     }
 }

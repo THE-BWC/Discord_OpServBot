@@ -1,5 +1,5 @@
 const { REST } = require('discord.js');
-const { settings_clientId, botMainDiscordServer, settings_guildId_dev } = require('./settings.json')
+const { settings_applicationId, botMainDiscordServer, settings_guildId_dev } = require('./settings.json')
 const { Routes } = require('discord-api-types/v10')
 const fs = require('fs')
 require('dotenv').config()
@@ -21,8 +21,8 @@ for (const folder of commandFolders) {
     }
 }
 
-const clientId = settings_clientId
-const guildId = settings_guildId_dev
+const applicationId = settings_applicationId
+const guildId = botMainDiscordServer
 
 // noinspection JSClosureCompilerSyntax,JSCheckFunctionSignatures
 const rest = new REST({ version: 10}).setToken(process.env.TOKEN);
@@ -33,13 +33,13 @@ const rest = new REST({ version: 10}).setToken(process.env.TOKEN);
 
         // Use to register slash commands in a specific guild.
         await rest.put(
-            Routes.applicationGuildCommands(clientId, guildId),
+            Routes.applicationGuildCommands(applicationId, guildId),
             { body: commands },
         )
 
         // Use to register slash commands in all guilds.
         // await rest.put(
-        //     Routes.applicationCommands(clientId),
+        //     Routes.applicationCommands(applicationId),
         //     { body: commands },
         // )
 

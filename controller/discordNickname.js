@@ -13,7 +13,7 @@ class DiscordNicknameController {
             let guild = await client.guilds.fetch(client.config.botMainDiscordServer)
                 .catch(err => {
                     client.logger.error(err.stack)
-                    return { message: `ERROR - Failed to fetch BWC Discord Server from Bot. Please verify correct Server ID in Settings file` }
+                    return { message: `ERROR - Failed to fetch WMKR Discord Server from Bot. Please verify correct Server ID in Settings file` }
                 })
 
             let guildUser = guild.members.cache.get(user.discord_user_id)
@@ -33,7 +33,7 @@ class DiscordNicknameController {
             if (guildUser.nickname === null) {
                 client.logger.info(guildUser)
                 let user_username = await client.xenProvider.fetchUsername(user.user_id)
-                let new_username = `[BWC] ${user_username[0].username}`
+                let new_username = `[WMKR] ${user_username[0].username}`
                 try {
                     await guildUser.setNickname(new_username)
                     return { message: "SUCCESS - Nickname set" }

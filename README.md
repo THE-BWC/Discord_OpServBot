@@ -1,4 +1,4 @@
-<img alt="Black Widow Company" src="https://the-bwc.com/PAO/BannerStandard.png"/>
+<img alt="WidowMakers" src="https://the-bwc.com/PAO/BannerStandard.png"/>
 
 # Opserv Integration - Discord
 Main Discord bot for the Opserv Integration project. This bot allows for Opserv to be integrated with Discord by providing a bridge between the two platforms.
@@ -123,8 +123,8 @@ The application uses the `winston` logger to log messages to the console and to 
 
 ## Contact
 If you have any questions, feel free to contact me at:
-- [BWC Discord](https://discord.the-bwc.com/) `[BWC] Patrick`
-- [BWC Forums](https://the-bwc.com/forum/index.php) `Patrick`.
+- [WMKR Discord](https://discord.the-bwc.com/) `[WMKR] Patrick`
+- [WMKR Forums](https://the-bwc.com/forum/index.php) `Patrick`.
 
 ## Credits
 - [Discord.js](https://discord.js.org/#/)
