@@ -8,7 +8,6 @@
 .env
 
 # Ignore Bot Files
-package-lock.json
 DiscordIntegration.log
 ecosystem.config.js
 settings.json
