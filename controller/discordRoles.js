@@ -75,8 +75,17 @@ class DiscordRolesController {
                             return { message: "ERROR - Failed to set Nickname" }
                         })
                     // Check if user already has nickname and set and if it includes [WMKR]. If not, add them.
-                } else if (guildUser.roles.cache.has(bwcRole.firstKey()) && !guildUser.nickname.includes('[WMKR]')) {
+                } else if (guildUser.roles.cache.has(bwcRole.firstKey()) && guildUser.nickname && !guildUser.nickname.includes('[WMKR]')) {
                     // If not WMKR tags in name, add them.
+                    let user_username = await client.xenProvider.fetchUsername(user.user_id)
+                    let new_username = `[WMKR] ${user_username[0].username}`
+                    await guildUser.setNickname(new_username)
+                        .catch(err => {
+                            client.logger.error(err.stack)
+                            return { message: "ERROR - Failed to set Nickname" }
+                        })
+                } else if (guildUser.roles.cache.has(bwcRole.firstKey()) && !guildUser.nickname) {
+                    // If no nickname, set it to the default.
                     let user_username = await client.xenProvider.fetchUsername(user.user_id)
                     let new_username = `[WMKR] ${user_username[0].username}`
                     await guildUser.setNickname(new_username)
