@@ -1,5 +1,5 @@
 class DiscordRolesController {
-    async syncRole(client, userId, forceNickname = 0) {
+    async syncRole(client, userId, forceNickname = 1) {
         client.logger.info(`[FUNCTION] - SyncRole function used`);
         // Check if user has Linked Discord to account
         let user = await client.xenProvider.fetchDiscordLinkInfoForumUserId(userId)
