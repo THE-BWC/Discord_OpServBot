@@ -25,4 +25,4 @@ COPY --chown=node:node . .
 CMD [ "node", "bot.js" ]
 
 LABEL org.opencontainers.image.source=https://github.com/the-bwc/discord_opservbot
-LABEL org.opencontainers.image.authors="Patrick Pedersen <patrick@patrickpedersen.tech> Black Widow Company <S-1@the-bwc.com>"
+LABEL org.opencontainers.image.authors="Patrick Pedersen <github@patrickpedersen.tech> Black Widow Company <S-1@the-bwc.com>"

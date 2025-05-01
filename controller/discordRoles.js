@@ -21,7 +21,7 @@ class DiscordRolesController {
             let guild = await client.guilds.fetch(client.config.botMainDiscordServer)
                 .catch(err => {
                     client.logger.error(err.stack)
-                    return { message: `ERROR - Failed to fetch BWC Discord Server from Bot. Please verify correct Server ID in Settings file` }
+                    return { message: `ERROR - Failed to fetch WMKR Discord Server from Bot. Please verify correct Server ID in Settings file` }
                 })
 
             let guildUser = guild.members.cache.get(user.discord_user_id)
@@ -37,11 +37,11 @@ class DiscordRolesController {
             client.logger.debug(bwcRole, guestRole, verifyRole, unsignedRole)
 
             if (!guildUser.roles.cache.has(bwcRole.firstKey())) {
-                client.logger.debug('Attempting to add BWC Role')
+                client.logger.debug('Attempting to add WMKR Role')
                 await guildUser.roles.add(bwcRole)
                     .catch(err => {
                         client.logger.error(err.stack)
-                        return { message: "ERROR - Failed to add BWC Role" }
+                        return { message: "ERROR - Failed to add WMKR Role" }
                     })
                 client.logger.debug('Attempting to remove Guest Role')
                 await guildUser.roles.remove(guestRole)
@@ -62,22 +62,22 @@ class DiscordRolesController {
                         return { message: "ERROR - Failed to remove Unsigned Role" }
                     })
 
-                // Check if the user is the guild owner. We can't update the Nickname.
                 if (forceNickname === 1) {
+                    // Check if the user is the guild owner. We can't update the Nickname.
                     if (guildUser.user.id !== guildUser.guild.ownerId) {
-                        // Check if user already has BWC tags in their Nickname.
-                        if (!guildUser.roles.cache.has(bwcRole.firstKey()) && guildUser.nickname && guildUser.nickname.includes('[BWC]')) {
-                            let new_username = guildUser.nickname.slice(5)
+                        // Check if user already has WMKR tags in their Nickname.
+                        if (!guildUser.roles.cache.has(bwcRole.firstKey()) && guildUser.nickname && guildUser.nickname.includes('[WMKR]')) {
+                            let new_username = guildUser.nickname.slice(6)
                             await guildUser.setNickname(new_username)
                                 .catch(err => {
                                     client.logger.error(err.stack)
                                     return { message: "ERROR - Failed to set Nickname" }
                                 })
-                            // Check if user already has nickname and set and if it includes [BWC]. If not, add them.
-                        } else if (guildUser.roles.cache.has(bwcRole.firstKey()) && (!guildUser.nickname || !guildUser.nickname.includes('[BWC]'))) {
-                            // If not BWC tags in name, add them.
+                            // Check if user already has nickname and set and if it includes [WMKR]. If not, add them.
+                        } else if (guildUser.roles.cache.has(bwcRole.firstKey()) && !guildUser.nickname.includes('[WMKR]')) {
+                            // If not WMKR tags in name, add them.
                             let user_username = await client.xenProvider.fetchUsername(user.user_id)
-                            let new_username = `[BWC] ${user_username[0].username}`
+                            let new_username = `[WMKR] ${user_username[0].username}`
                             await guildUser.setNickname(new_username)
                                 .catch(err => {
                                     client.logger.error(err.stack)
@@ -203,7 +203,7 @@ class DiscordRolesController {
             } else {
                 username = user.user.username
             }
-            username = username.replace('[BWC] ', '') // Do not remove the space after [BWC], it will screw up the usernames
+            username = username.replace('[WMKR] ', '') // Do not remove the space after [WMKR], it will screw up the usernames
             let xenUser = await client.xenProvider.fetchUserByUsername(username)
             if (xenUser.length === 0) {
                 failedUsers.push({ username: username, discordId: user.id })
@@ -237,7 +237,7 @@ class DiscordRolesController {
         let userGroupIdsArray = Object.values(userGroupIds[0])[0].split(",")
         userGroupIdsArray.push(Object.values(userGroupIds[0])[1].toString())
 
-        if (userGroupIdsArray.includes('8')) return { message: "Member is banned from BWC. If this is in error contact S-1." }
+        if (userGroupIdsArray.includes('8')) return { message: "Member is banned from WMKR. If this is in error contact S-1." }
         if (userGroupIdsArray.includes('10')) return { message: "Hol up... Member is marked as departed. Please contact S-1 Immediately!" }
         if (userGroupIdsArray.includes('43')) return { message: "Member is an Ambassador, please contact S-1 to receive Ambassador tags" }
         if (userGroupIdsArray.includes('51')) return { message: "Member is discharged. Cannot give role" }
@@ -262,7 +262,7 @@ class DiscordRolesController {
         })
 
         let bwcRole = guild.roles.cache.filter(role => role.id === keyRolesObject.bwc)
-        if (!bwcRole) return { message: "ERROR - No default BWC role set. Contact S-1 for assistance" }
+        if (!bwcRole) return { message: "ERROR - No default WMKR role set. Contact S-1 for assistance" }
 
         let guestRole = guild.roles.cache.filter(role => role.id === keyRolesObject.guest)
         if (!guestRole) return { message: "ERROR - No default Guest role set. Contact S-1 for assistance" }
