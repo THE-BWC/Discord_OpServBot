@@ -1,5 +1,5 @@
 class DiscordRolesController {
-    async syncRole(client, userId, forceNickname = 1) {
+    async syncRole(client, userId) {
         client.logger.info(`[FUNCTION] - SyncRole function used`);
         // Check if user has Linked Discord to account
         let user = await client.xenProvider.fetchDiscordLinkInfoForumUserId(userId)
@@ -36,6 +36,7 @@ class DiscordRolesController {
                 unsignedRole = guildRoles[3]
             client.logger.debug(bwcRole, guestRole, verifyRole, unsignedRole)
 
+            let message = ""
             if (!guildUser.roles.cache.has(bwcRole.firstKey())) {
                 client.logger.debug('Attempting to add WMKR Role')
                 await guildUser.roles.add(bwcRole)
@@ -62,34 +63,36 @@ class DiscordRolesController {
                         return { message: "ERROR - Failed to remove Unsigned Role" }
                     })
 
-                if (forceNickname === 1) {
-                    // Check if the user is the guild owner. We can't update the Nickname.
-                    if (guildUser.user.id !== guildUser.guild.ownerId) {
-                        // Check if user already has WMKR tags in their Nickname.
-                        if (!guildUser.roles.cache.has(bwcRole.firstKey()) && guildUser.nickname && guildUser.nickname.includes('[WMKR]')) {
-                            let new_username = guildUser.nickname.slice(6)
-                            await guildUser.setNickname(new_username)
-                                .catch(err => {
-                                    client.logger.error(err.stack)
-                                    return { message: "ERROR - Failed to set Nickname" }
-                                })
-                            // Check if user already has nickname and set and if it includes [WMKR]. If not, add them.
-                        } else if (guildUser.roles.cache.has(bwcRole.firstKey()) && !guildUser.nickname.includes('[WMKR]')) {
-                            // If not WMKR tags in name, add them.
-                            let user_username = await client.xenProvider.fetchUsername(user.user_id)
-                            let new_username = `[WMKR] ${user_username[0].username}`
-                            await guildUser.setNickname(new_username)
-                                .catch(err => {
-                                    client.logger.error(err.stack)
-                                    return { message: "ERROR - Failed to set Nickname" }
-                                })
-                        }
-                    } else {
-                        return { message: "ERROR - Cannot update nickname for guild owner" }
-                    }
-                }
+                message = "SUCCESS - Sync'd Discord Permissions\n"
+            } else {
+                message = "SUCCESS - Permissions are already synced\n"
             }
-            return { message: "SUCCESS - Sync'd Discord Permissions" }
+
+            // Check if the user is the guild owner. We can't update the Nickname.
+            if (guildUser.user.id !== guildUser.guild.ownerId) {
+                // Check if user already has WMKR tags in their Nickname.
+                if (!guildUser.roles.cache.has(bwcRole.firstKey()) && guildUser.nickname && guildUser.nickname.includes('[WMKR]')) {
+                    let new_username = guildUser.nickname.slice(6)
+                    await guildUser.setNickname(new_username)
+                        .catch(err => {
+                            client.logger.error(err.stack)
+                            return { message: "ERROR - Failed to set Nickname" }
+                        })
+                    // Check if user already has nickname and set and if it includes [WMKR]. If not, add them.
+                } else if (guildUser.roles.cache.has(bwcRole.firstKey()) && !guildUser.nickname.includes('[WMKR]')) {
+                    // If not WMKR tags in name, add them.
+                    let user_username = await client.xenProvider.fetchUsername(user.user_id)
+                    let new_username = `[WMKR] ${user_username[0].username}`
+                    await guildUser.setNickname(new_username)
+                        .catch(err => {
+                            client.logger.error(err.stack)
+                            return message += "ERROR - Failed to set Nickname"
+                        })
+                }
+            } else {
+                return message += "ERROR - Cannot update nickname for guild owner"
+            }
+            return { message: message }
         }
         return { message: "ERROR - Can't find members Discord ID in the Database" }
     }
