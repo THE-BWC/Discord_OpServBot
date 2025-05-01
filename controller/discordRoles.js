@@ -62,10 +62,6 @@ class DiscordRolesController {
                         client.logger.error(err.stack)
                         return { message: "ERROR - Failed to remove Unsigned Role" }
                     })
-
-                message = "SUCCESS - Sync'd Discord Permissions\n"
-            } else {
-                message = "SUCCESS - Permissions are already synced\n"
             }
 
             // Check if the user is the guild owner. We can't update the Nickname.
@@ -86,13 +82,13 @@ class DiscordRolesController {
                     await guildUser.setNickname(new_username)
                         .catch(err => {
                             client.logger.error(err.stack)
-                            return message += "ERROR - Failed to set Nickname"
+                            return { message: "ERROR - Failed to set Nickname" }
                         })
                 }
             } else {
-                return message += "ERROR - Cannot update nickname for guild owner"
+                return { message: "ERROR - Cannot update nickname for guild owner" }
             }
-            return { message: message }
+            return { message: "SUCCESS - User sync'd" }
         }
         return { message: "ERROR - Can't find members Discord ID in the Database" }
     }
