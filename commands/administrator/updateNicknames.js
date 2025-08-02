@@ -33,11 +33,11 @@ module.exports = {
                 let guild = await client.guilds.fetch(client.config.botMainDiscordServer)
                     .catch(err => {
                         client.logger.error(err.stack)
-                        return { message: `ERROR - Failed to fetch WMKR Discord Server from Bot. Please verify correct Server ID in Settings file` }
+                        return { message: `ERROR - Failed to fetch BWC Discord Server from Bot. Please verify correct Server ID in Settings file` }
                     })
 
                 if (!guild) {
-                    return { message: `ERROR - Failed to fetch WMKR Discord Server from Bot. Please verify correct Server ID in Settings file` }
+                    return { message: `ERROR - Failed to fetch BWC Discord Server from Bot. Please verify correct Server ID in Settings file` }
                 }
 
                 if (interaction.options.getSubcommand() === 'user') {
@@ -46,15 +46,15 @@ module.exports = {
                     let member = await guild.members.fetch(user.id)
                         .catch(err => {
                             client.logger.error(err.stack)
-                            return { message: `ERROR - Failed to fetch user from WMKR Discord Server` }
+                            return { message: `ERROR - Failed to fetch user from BWC Discord Server` }
                         })
                     if (!member) {
-                        return { message: `ERROR - Failed to fetch user from WMKR Discord Server` }
+                        return { message: `ERROR - Failed to fetch user from BWC Discord Server` }
                     }
                     let forumUsersToDiscord = await client.xenProvider.fetchAllDiscordLinkInfo()
                     let userInfo = forumUsersToDiscord.find(user => user.discord_user_id === member.user.id)
                     if (!userInfo) {
-                        return { message: `ERROR - Failed to fetch user from WMKR Discord Server` }
+                        return { message: `ERROR - Failed to fetch user from BWC Discord Server` }
                     }
 
                     // Call the syncRole function to update the nickname
@@ -74,7 +74,7 @@ module.exports = {
                             let user = forumUsersToDiscord.find(user => user.discord_user_id === member.user.id)
                             if (user) {
                                 let user_username = await client.xenProvider.fetchUsername(user.user_id)
-                                let new_username = `[WMKR] ${user_username[0].username}`
+                                let new_username = `[BWC] ${user_username[0].username}`
                                 try {
                                     await member.setNickname(new_username)
                                 } catch (err) {
